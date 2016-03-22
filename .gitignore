@@ -1,0 +1,14 @@
+.metadata
+.recommenders
+Editor/.settings
+Editor/bin
+Editor/.classpath
+Editor/.project
+Server/.settings
+Server/bin
+Server/.classpath
+Server/.project
+TestInput/.settings
+TestInput/bin
+TestInput/.classpath
+TestInput/.project
