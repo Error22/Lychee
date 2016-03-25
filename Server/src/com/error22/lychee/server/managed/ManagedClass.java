@@ -13,7 +13,9 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.TypePath;
 import org.objectweb.asm.commons.AnnotationRemapper;
 import org.objectweb.asm.commons.ClassRemapper;
+import org.objectweb.asm.commons.MethodRemapper;
 import org.objectweb.asm.commons.Remapper;
+import org.objectweb.asm.tree.ClassNode;
 
 import com.strobel.assembler.metadata.ArrayTypeLoader;
 import com.strobel.assembler.metadata.Buffer;
@@ -49,101 +51,9 @@ public class ManagedClass {
 			log.info("Processing " + resource);
 
 			
+			cr.accept(new ClassScanner(), 0);
 
-			ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-
-			cr.accept(new ClassRemapper(cw, new Remapper() {
-
-				@Override
-				public String mapMethodName(String paramString1, String paramString2, String paramString3) {
-					log.info("mapMethodName " + paramString1 + " " + paramString2 + " " + paramString3);
-
-					return super.mapMethodName(paramString1, paramString2, paramString3);
-				}
-
-				@Override
-				public String mapInvokeDynamicMethodName(String paramString1, String paramString2) {
-					log.info("mapInvokeDynamicMethodName " + paramString1 + " " + paramString2);
-
-					return super.mapInvokeDynamicMethodName(paramString1, paramString2);
-				}
-
-				@Override
-				public String mapFieldName(String paramString1, String paramString2, String paramString3) {
-					log.info("mapFieldName " + paramString1 + " " + paramString2 + " " + paramString3);
-					return super.mapFieldName(paramString1, paramString2, paramString3);
-				}
-
-				@Override
-				public String map(String paramString) {
-					log.info("map " + paramString);
-					return super.map(paramString);
-				}
-
-			}) {
-				@Override
-				public void visit(int paramInt1, int paramInt2, String paramString1, String paramString2,
-						String paramString3, String[] paramArrayOfString) {
-					super.visit(paramInt1, paramInt2, paramString1, paramString2, paramString3, paramArrayOfString);
-				}
-
-				@Override
-				public AnnotationVisitor visitAnnotation(String paramString, boolean paramBoolean) {
-					log.info("visitAnnotation " + paramString + " " + paramBoolean);
-					return super.visitAnnotation(paramString, paramBoolean);
-				}
-
-				@Override
-				public AnnotationVisitor visitTypeAnnotation(int paramInt, TypePath paramTypePath, String paramString,
-						boolean paramBoolean) {
-					log.info("visitTypeAnnotation " + paramInt + " " + paramTypePath + " " + paramString + " "
-							+ paramBoolean);
-					return super.visitTypeAnnotation(paramInt, paramTypePath, paramString, paramBoolean);
-				}
-
-				@Override
-				protected AnnotationVisitor createAnnotationRemapper(AnnotationVisitor paramAnnotationVisitor) {
-					return new AnnotationRemapper(paramAnnotationVisitor, remapper) {
-						@Override
-						public void visit(String paramString, Object paramObject) {
-							log.info("visit " + paramString + " " + paramObject + " " + (paramObject.getClass()));
-							super.visit(paramString, paramObject);
-						}
-
-						@Override
-						public void visitEnum(String paramString1, String paramString2, String paramString3) {
-							log.info("visitEnum " + paramString1 + " " + paramString2 + " " + paramString3);
-							super.visitEnum(paramString1, paramString2, paramString3);
-						}
-
-					};
-				}
-			}, 0);
 			
-			StringWriter sw = new StringWriter();
-
-			DecompilerSettings settings = new DecompilerSettings();
-			settings.setFormattingOptions(JavaFormattingOptions.createDefault());
-			settings.setTypeLoader(new ITypeLoader() {
-				
-				@Override
-				public boolean tryLoadType(String paramString, Buffer paramBuffer) {
-					log.info("tryLoadType "+paramString+" "+paramBuffer);
-					byte[] d = cw.toByteArray();
-					if(paramString.equals(resource)){
-						paramBuffer.reset(d.length);
-						paramBuffer.putByteArray(d, 0, d.length);
-						paramBuffer.position(0);
-						return true;
-					}
-					
-					return false;
-				}
-			});
-			
-			Decompiler.decompile(resource, new PlainTextOutput(sw), settings);
-			
-			log.info(" "+sw.toString());
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -196,5 +106,31 @@ public class ManagedClass {
 	public String getName() {
 		return name;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ManagedClass other = (ManagedClass) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+	
 
 }

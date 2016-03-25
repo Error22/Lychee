@@ -41,9 +41,9 @@ public class LoggerStream extends OutputStream {
 		for(int i = 2; i < stes.length; i++){
 			String name = stes[i].getClassName();
 			if(!name.startsWith("java.") && !name.startsWith("sun")){
-				return LogManager.getLogger(name+" (USING: System.out/err!)");
+				return LogManager.getLogger(name+"::System.out/err");
 			}
 		}
-		return LogManager.getLogger("Unknown (USING: System.out/err!)");
+		return LogManager.getLogger("Unknown::System.out/err");
 	}
 }
