@@ -4,35 +4,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.error22.lychee.server.managed.Project;
+import com.error22.lychee.server.java.JavaProject;
 
 public class Snapshot {
 	private UUID id;
-	private Project project;
+	private JavaProject project;
 	private Snapshot parent;
 	private IAction action;
 	private SnapshotCache cache;
 
-	public Snapshot(Project project, UUID id, Snapshot parent, IAction action) {
+	public Snapshot(JavaProject project, UUID id, Snapshot parent, IAction action) {
 		this.id = id;
 		this.project = project;
 		this.parent = parent;
 		this.action = action;
 	}
-	
-	public void generateCache(boolean allowDerivateCache){
-		if(allowDerivateCache && parent != null && parent.cache != null){
+
+	public void generateCache(boolean allowDerivateCache) {
+		if (allowDerivateCache && parent != null && parent.cache != null) {
 			cache = new SnapshotCache(parent.cache);
 			cache.apply(action);
-		}else{
+		} else {
 			cache = new SnapshotCache(project);
-			
+
 			ArrayList<IAction> actions = new ArrayList<IAction>();
 			addUptreeActions(actions, true);
-			for(IAction _action : actions){
+			for (IAction _action : actions) {
 				cache.apply(_action);
 			}
-			
+
 			cache.apply(action);
 		}
 	}
@@ -48,16 +48,16 @@ public class Snapshot {
 	public UUID getId() {
 		return id;
 	}
-	
+
 	public IAction getAction() {
 		return action;
 	}
-	
-	public void addUptreeActions(List<IAction> actions, boolean start){
-		if(parent != null){
+
+	public void addUptreeActions(List<IAction> actions, boolean start) {
+		if (parent != null) {
 			parent.addUptreeActions(actions, false);
 		}
-		if(!start){
+		if (!start) {
 			actions.add(action);
 		}
 	}

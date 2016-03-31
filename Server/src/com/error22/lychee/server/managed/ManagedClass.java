@@ -1,39 +1,24 @@
 package com.error22.lychee.server.managed;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.TypePath;
-import org.objectweb.asm.commons.AnnotationRemapper;
-import org.objectweb.asm.commons.ClassRemapper;
-import org.objectweb.asm.commons.MethodRemapper;
-import org.objectweb.asm.commons.Remapper;
-import org.objectweb.asm.tree.ClassNode;
 
-import com.strobel.assembler.metadata.ArrayTypeLoader;
-import com.strobel.assembler.metadata.Buffer;
-import com.strobel.assembler.metadata.ITypeLoader;
-import com.strobel.decompiler.Decompiler;
-import com.strobel.decompiler.DecompilerSettings;
-import com.strobel.decompiler.PlainTextOutput;
-import com.strobel.decompiler.languages.java.JavaFormattingOptions;
+import com.error22.lychee.server.java.JavaProject;
 
 public class ManagedClass {
 	private static Logger log = LogManager.getLogger();
-	private Project project;
+	private JavaProject project;
 	private ManagedJar jar;
 	private UUID id;
 	private String resource, path, name;
 	private HashMap<UUID, ManagedClass> dependencies, dependents;
 
-	public ManagedClass(Project project, ManagedJar jar, UUID id, String resource, String path, String name) {
+	public ManagedClass(JavaProject project, ManagedJar jar, UUID id, String resource, String path, String name) {
 		this.project = project;
 		this.jar = jar;
 		this.id = id;
@@ -50,15 +35,16 @@ public class ManagedClass {
 			log.info("");
 			log.info("Processing " + resource);
 
-			
 			cr.accept(new ClassScanner(), 0);
-
-			
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+	}
+
+	private void scanClass() {
 
 	}
 
@@ -83,7 +69,7 @@ public class ManagedClass {
 		// }
 	}
 
-	public Project getProject() {
+	public JavaProject getProject() {
 		return project;
 	}
 
@@ -131,6 +117,5 @@ public class ManagedClass {
 			return false;
 		return true;
 	}
-	
 
 }

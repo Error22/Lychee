@@ -5,14 +5,14 @@ import java.util.HashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.error22.lychee.server.managed.Project;
+import com.error22.lychee.server.java.JavaProject;
 
 public class SnapshotCache {
 	private static Logger log = LogManager.getLogger();
-	private Project project;
+	private JavaProject project;
 	private HashMap<String, String> classMap;
 
-	public SnapshotCache(Project project) {
+	public SnapshotCache(JavaProject project) {
 		this.project = project;
 		classMap = new HashMap<String, String>();
 	}
@@ -31,8 +31,7 @@ public class SnapshotCache {
 		if (action instanceof ActionRenameClass) {
 			ActionRenameClass act = (ActionRenameClass) action;
 			classMap.put(act.getSource(), act.getTarget());
-			
-			
+
 		} else {
 			throw new RuntimeException("Unknown action! " + action);
 		}

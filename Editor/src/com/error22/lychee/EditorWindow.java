@@ -109,7 +109,7 @@ public class EditorWindow {
 				}
 			}
 		));
-		tree.setCellRenderer(new CellRenderer());
+//		tree.setCellRenderer(new CellRenderer());
 		scrollPane_1.setViewportView(tree);
 		
 		JSplitPane splitPane_1 = new JSplitPane();

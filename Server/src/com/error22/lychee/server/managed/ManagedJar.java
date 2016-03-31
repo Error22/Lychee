@@ -11,12 +11,12 @@ import java.util.jar.JarFile;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.objectweb.asm.commons.Remapper;
-import org.objectweb.asm.commons.RemappingClassAdapter;
+
+import com.error22.lychee.server.java.JavaProject;
 
 public class ManagedJar {
 	private static Logger log = LogManager.getLogger();
-	private Project project;
+	private JavaProject project;
 	private UUID id;
 	private File sourceFile, outputFile;
 	private String name;
@@ -25,7 +25,7 @@ public class ManagedJar {
 	private JarStatus status;
 	private HashMap<UUID, ManagedClass> classes;
 
-	public ManagedJar(Project project, UUID id, String path, JarType type) {
+	public ManagedJar(JavaProject project, UUID id, String path, JarType type) {
 		this.project = project;
 		this.id = id;
 		sourceFile = new File(new File(project.getFolder(), "source"), path);
@@ -39,7 +39,7 @@ public class ManagedJar {
 	public boolean load() {
 		if (!sourceFile.exists()) {
 			status = JarStatus.NotFound;
-			log.warn("Jar "+sourceFile+" was not found!");
+			log.warn("Jar " + sourceFile + " was not found!");
 			return false;
 		}
 
@@ -62,26 +62,25 @@ public class ManagedJar {
 				}
 			}
 			jar.close();
-			
 
 			status = JarStatus.Loaded;
 			return true;
 		} catch (Exception e) {
 			status = JarStatus.Other;
-			log.warn("Jar "+sourceFile+" had an unknown error!", e);
+			log.warn("Jar " + sourceFile + " had an unknown error!", e);
 			return false;
 		}
 	}
-	
-	public void findDependencies(){
-		
+
+	public void findDependencies() {
+
 	}
-	
-	public InputStream getStream(String path) throws IOException{
+
+	public InputStream getStream(String path) throws IOException {
 		return jar.getInputStream(jar.getEntry(path));
 	}
 
-	public Project getProject() {
+	public JavaProject getProject() {
 		return project;
 	}
 
