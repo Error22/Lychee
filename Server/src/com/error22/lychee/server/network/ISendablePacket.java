@@ -4,5 +4,5 @@ import java.io.IOException;
 
 public interface ISendablePacket {
 
-	public abstract void write(NetworkClient client, PacketBuffer buffer) throws IOException;
+	public void write(NetworkClient client, PacketBuffer buffer) throws IOException;
 }

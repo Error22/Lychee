@@ -51,7 +51,8 @@ public class NetworkManager {
 				pipeline.addLast("encoder", new PacketEncoder());
 				pipeline.addLast("client", client);
 			}
-		}).group(networkGroup).localAddress(host, port).bind().syncUninterruptibly();
+		}).group(networkGroup).childOption(ChannelOption.SO_KEEPALIVE, true).localAddress(host, port).bind()
+				.syncUninterruptibly();
 	}
 
 	private static Map<Pair<Integer, ConnectionType>, Class<? extends INetworkHandler>> networkHandlers;

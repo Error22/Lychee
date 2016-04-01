@@ -130,7 +130,7 @@ public class EditorWindow {
 		
 		Theme theme = null;
 		try {
-			theme = Theme.load(EditorWindow.class.getResourceAsStream("/resources/theme.xml"));
+			theme = Theme.load(EditorWindow.class.getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/eclipse.xml"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
