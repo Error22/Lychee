@@ -33,12 +33,13 @@ public class NetworkClient extends SimpleChannelInboundHandler<IReceivablePacket
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		channel = ctx.channel();
 		address = channel.remoteAddress();
-		System.out.println(" " + address);
+		System.out.println("Active! " + address);
 		channel.config().setAutoRead(true);
 	}
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext arg0, IReceivablePacket arg1) throws Exception {
+		System.out.print("read " + arg1);
 		if (type == ConnectionType.Handshake) {
 			if (arg1 instanceof V1Handshake) {
 				V1Handshake handshake = (V1Handshake) arg1;
@@ -89,6 +90,10 @@ public class NetworkClient extends SimpleChannelInboundHandler<IReceivablePacket
 		return networkHandler;
 	}
 
+	public PacketMap getPacketMap() {
+		return type == ConnectionType.Handshake ? handshakePacketMap : networkHandler.getPacketMap();
+	}
+
 	public LycheeServer getServer() {
 		return server;
 	}
@@ -107,6 +112,13 @@ public class NetworkClient extends SimpleChannelInboundHandler<IReceivablePacket
 
 	public String getIdent() {
 		return ident;
+	}
+
+	private static final PacketMap handshakePacketMap;
+
+	static {
+		handshakePacketMap = new PacketMap();
+		handshakePacketMap.registerReceivablePacket(0, V1Handshake.class);
 	}
 
 }

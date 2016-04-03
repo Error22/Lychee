@@ -10,22 +10,33 @@ import org.apache.logging.log4j.Logger;
 import com.error22.lychee.server.java.JavaProject;
 import com.error22.lychee.server.managed.JarType;
 import com.error22.lychee.server.managed.ManagedClass;
+import com.error22.lychee.server.network.NetworkManager;
 import com.error22.lychee.server.snapshots.ActionRenameClass;
 import com.error22.lychee.server.snapshots.Snapshot;
 
 public class LycheeServer {
 	private static Logger log = LogManager.getLogger();
+	public static LycheeServer INSTANCE;
 	private static HashMap<UUID, IProject> projects;
+	private static NetworkManager networkManager;
 
-	private static void addProject(IProject project) {
-		projects.put(project.getId(), project);
-	}
-
-	public static void main(String[] args) {
-		Util.tieSystemOutAndErrToLog();
-		log.info("Starting!");
-
+	public void init() {
 		projects = new HashMap<UUID, IProject>();
+
+		networkManager = new NetworkManager(this, null, 1234);
+		networkManager.start();
+		
+		boolean abc = true;
+		while(abc){
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
 
 		JavaProject exampleProject = new JavaProject(UUID.randomUUID(), "Example", new File("Projects/Example"));
 		addProject(exampleProject);
@@ -66,6 +77,18 @@ public class LycheeServer {
 		}
 
 		// snapshot.get
+
+	}
+
+	private void addProject(IProject project) {
+		projects.put(project.getId(), project);
+	}
+
+	public static void main(String[] args) {
+		Util.tieSystemOutAndErrToLog();
+		log.info("Starting!");
+		INSTANCE = new LycheeServer();
+		INSTANCE.init();
 
 	}
 }

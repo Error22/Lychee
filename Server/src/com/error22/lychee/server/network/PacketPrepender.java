@@ -9,7 +9,7 @@ public class PacketPrepender extends MessageToByteEncoder<ByteBuf> {
 	@Override
 	protected void encode(ChannelHandlerContext ctx, ByteBuf in, ByteBuf out) {
 		out.ensureWritable(4 + in.readableBytes());
-		out.writeInt(4);
+		out.writeInt(in.readableBytes());
 		out.writeBytes(in, in.readerIndex(), in.readableBytes());
 	}
 }

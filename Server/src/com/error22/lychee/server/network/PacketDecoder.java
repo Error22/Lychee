@@ -16,7 +16,7 @@ public class PacketDecoder extends ByteToMessageDecoder {
 			PacketBuffer buffer = new PacketBuffer(data);
 			int packetId = buffer.readInt();
 
-			PacketMap map = client.getNetworkHandler().getPacketMap();
+			PacketMap map = client.getPacketMap();
 
 			if (map.canRecievePacket(packetId)) {
 				try {
