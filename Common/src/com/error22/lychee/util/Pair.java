@@ -1,4 +1,4 @@
-package com.error22.lychee.server;
+package com.error22.lychee.util;
 
 public class Pair<TFirst, TLast> {
 	private TFirst first;
