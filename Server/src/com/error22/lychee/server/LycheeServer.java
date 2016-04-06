@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.error22.lychee.network.NetworkServer;
+import com.error22.lychee.util.Util;
 
 public class LycheeServer {
 	private static Logger log = LogManager.getLogger();

@@ -1,4 +1,4 @@
-package com.error22.lychee.server;
+package com.error22.lychee.util;
 
 import java.io.PrintStream;
 import java.util.List;

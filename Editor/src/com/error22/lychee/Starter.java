@@ -1,15 +1,22 @@
 package com.error22.lychee;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.error22.lychee.network.Handshake;
 import com.error22.lychee.network.INetworkHandler;
 import com.error22.lychee.network.IPacket;
 import com.error22.lychee.network.NetworkClient;
 import com.error22.lychee.network.NetworkManager;
 import com.error22.lychee.network.PacketMap;
+import com.error22.lychee.util.Util;
 
 public class Starter {
+	private static Logger log = LogManager.getLogger();
 	
 	public static void main(String[] args) throws InterruptedException {
+		Util.tieSystemOutAndErrToLog();
+		log.info("Starting!");
 		
 		NetworkClient client = new NetworkClient();
 		client.connect("127.0.0.1", 1234, new INetworkHandler() {
