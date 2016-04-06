@@ -60,10 +60,14 @@ public class PacketMap {
 	static {
 		packetMaps = new HashMap<Pair<Integer, ClientType>, PacketMap>();
 		handshakePacketMap = new PacketMap();
+		handshakePacketMap.registerPacket(-1, Ping.class);
+		handshakePacketMap.registerPacket(-2, Pong.class);
 		handshakePacketMap.registerPacket(1, Handshake.class);
 		handshakePacketMap.registerPacket(2, HandshakeResponse.class);
 
 		PacketMap v1Editor = createPacketMap(-1, 1, ClientType.Editor);
-
+		v1Editor.registerPacket(-1, Ping.class);
+		v1Editor.registerPacket(-2, Pong.class);
+		
 	}
 }

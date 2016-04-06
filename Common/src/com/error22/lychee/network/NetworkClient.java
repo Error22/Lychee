@@ -13,7 +13,7 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 
 public class NetworkClient {
 	private static NioEventLoopGroup networkGroup = new NioEventLoopGroup(0,
-			(new ThreadFactoryBuilder()).setNameFormat("Netty IO #%d").setDaemon(true).build());
+			(new ThreadFactoryBuilder()).setNameFormat("Netty-%d").setDaemon(true).build());
 	private NetworkManager manager;
 	
 	public void connect(String address, int port, INetworkHandler handler) throws InterruptedException {
@@ -25,7 +25,7 @@ public class NetworkClient {
 					@Override
 					protected void initChannel(Channel channel) throws Exception {
 						ChannelPipeline pipeline = channel.pipeline();
-						pipeline.addLast(new ReadTimeoutHandler(30));
+						pipeline.addLast(new ReadTimeoutHandler(130));
 						pipeline.addLast("splitter", new PacketSplitter());
 						pipeline.addLast("decoder", new PacketDecoder());
 						pipeline.addLast("prepender", new PacketPrepender());
