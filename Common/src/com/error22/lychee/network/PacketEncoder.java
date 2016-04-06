@@ -9,7 +9,6 @@ import io.netty.handler.codec.MessageToByteEncoder;
 public class PacketEncoder extends MessageToByteEncoder<SentPacket> {
 
 	protected void encode(ChannelHandlerContext ctx, SentPacket packet, ByteBuf out) throws IOException {
-		System.out.println("Hello");
 		PacketBuffer buffer = new PacketBuffer(out);
 		buffer.writeInt(packet.getId());
 		packet.getPacket().write(buffer);

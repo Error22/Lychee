@@ -20,8 +20,9 @@ public class NetworkManager extends SimpleChannelInboundHandler<ReceivedPacket> 
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext arg0, ReceivedPacket arg1) throws Exception {
-//TODO: complete		
-		handler.handlePacket(arg1);
+		IPacket packet = handler.getPacketMap().constructPacket(arg1.getId());
+		packet.read(arg1.getBuffer());
+		handler.handlePacket(packet);
 	}
 
 	@SafeVarargs
