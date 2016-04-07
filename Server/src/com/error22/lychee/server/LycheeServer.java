@@ -65,7 +65,8 @@ public class LycheeServer {
 
 		NetworkServer server = new NetworkServer();
 		server.start(null, 1234, ServerNetworkHandler.class);
-
+		
+		//TODO: Replace
 		while (true) {
 			try {
 				Thread.sleep(Integer.MAX_VALUE);
