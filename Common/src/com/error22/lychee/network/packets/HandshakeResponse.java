@@ -1,6 +1,9 @@
-package com.error22.lychee.network;
+package com.error22.lychee.network.packets;
 
 import java.io.IOException;
+
+import com.error22.lychee.network.IPacket;
+import com.error22.lychee.network.PacketBuffer;
 
 public class HandshakeResponse implements IPacket {
 	private String ident;

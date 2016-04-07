@@ -3,15 +3,15 @@ package com.error22.lychee.editor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.error22.lychee.network.Handshake;
-import com.error22.lychee.network.HandshakeResponse;
 import com.error22.lychee.network.INetworkHandler;
 import com.error22.lychee.network.IPacket;
 import com.error22.lychee.network.NetworkClient;
 import com.error22.lychee.network.NetworkManager;
 import com.error22.lychee.network.PacketMap;
-import com.error22.lychee.network.Ping;
-import com.error22.lychee.network.Pong;
+import com.error22.lychee.network.packets.Handshake;
+import com.error22.lychee.network.packets.HandshakeResponse;
+import com.error22.lychee.network.packets.Ping;
+import com.error22.lychee.network.packets.Pong;
 import com.error22.lychee.util.Util;
 
 public class Starter {

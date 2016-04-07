@@ -1,4 +1,4 @@
-package com.error22.lychee.network;
+package com.error22.lychee.network.packets;
 
 public enum ClientType {
 	Editor;

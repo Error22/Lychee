@@ -3,17 +3,17 @@ package com.error22.lychee.server.network;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
-import com.error22.lychee.network.ClientType;
-import com.error22.lychee.network.EnterMode;
-import com.error22.lychee.network.Handshake;
-import com.error22.lychee.network.HandshakeResponse;
 import com.error22.lychee.network.INetworkHandler;
 import com.error22.lychee.network.IPacket;
 import com.error22.lychee.network.NetworkManager;
 import com.error22.lychee.network.PacketMap;
-import com.error22.lychee.network.Ping;
-import com.error22.lychee.network.Pong;
-import com.error22.lychee.network.SelectVersion;
+import com.error22.lychee.network.packets.ClientType;
+import com.error22.lychee.network.packets.EnterMode;
+import com.error22.lychee.network.packets.Handshake;
+import com.error22.lychee.network.packets.HandshakeResponse;
+import com.error22.lychee.network.packets.Ping;
+import com.error22.lychee.network.packets.Pong;
+import com.error22.lychee.network.packets.SelectVersion;
 import com.error22.lychee.server.LycheeServer;
 import com.error22.lychee.util.Pair;
 

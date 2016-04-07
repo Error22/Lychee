@@ -1,8 +1,8 @@
 package com.error22.lychee.server.network;
 
-import com.error22.lychee.network.ClientType;
 import com.error22.lychee.network.IPacket;
 import com.error22.lychee.network.PacketMap;
+import com.error22.lychee.network.packets.ClientType;
 import com.error22.lychee.server.LycheeServer;
 
 public class V1Editor implements IClientHandler, IEditor {

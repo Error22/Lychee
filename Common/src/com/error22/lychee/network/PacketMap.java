@@ -3,6 +3,13 @@ package com.error22.lychee.network;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
+import com.error22.lychee.network.packets.ClientType;
+import com.error22.lychee.network.packets.EnterMode;
+import com.error22.lychee.network.packets.Handshake;
+import com.error22.lychee.network.packets.HandshakeResponse;
+import com.error22.lychee.network.packets.Ping;
+import com.error22.lychee.network.packets.Pong;
+import com.error22.lychee.network.packets.SelectVersion;
 import com.error22.lychee.util.Pair;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
