@@ -52,9 +52,13 @@ public class PacketMap {
 		packetMaps.put(new Pair<Integer, ClientType>(version, type), map);
 		return map;
 	}
-
+	
 	public static PacketMap getHandshakePacketMap() {
 		return handshakePacketMap;
+	}
+	
+	public static PacketMap getPacketMap(int version, ClientType type){
+		return packetMaps.get(new Pair<Integer, ClientType>(version, type));
 	}
 
 	static {
@@ -64,6 +68,8 @@ public class PacketMap {
 		handshakePacketMap.registerPacket(-2, Pong.class);
 		handshakePacketMap.registerPacket(1, Handshake.class);
 		handshakePacketMap.registerPacket(2, HandshakeResponse.class);
+		handshakePacketMap.registerPacket(3, SelectVersion.class);
+		handshakePacketMap.registerPacket(4, EnterMode.class);
 
 		PacketMap v1Editor = createPacketMap(-1, 1, ClientType.Editor);
 		v1Editor.registerPacket(-1, Ping.class);

@@ -23,8 +23,9 @@ public class NetworkManager extends SimpleChannelInboundHandler<ReceivedPacket> 
 	private HashMap<Integer, Long> pingSendTimes;
 	private Timer timer;
 	private long ping;
-	
-	public NetworkManager() {
+
+	public NetworkManager(INetworkHandler handler) {
+		this.handler = handler;
 	}
 
 	@Override
@@ -36,7 +37,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<ReceivedPacket> 
 		handler.connected(this);
 		timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
-			
+
 			@Override
 			public void run() {
 				int id = pingIds.nextClearBit(0);
@@ -44,7 +45,6 @@ public class NetworkManager extends SimpleChannelInboundHandler<ReceivedPacket> 
 				long time = System.currentTimeMillis();
 				pingSendTimes.put(id, time);
 				sendPacket(new Ping(id, time));
-				log.info("Measuring ping/RTT! id="+id);
 			}
 		}, 120000, 120000);
 	}
@@ -53,27 +53,26 @@ public class NetworkManager extends SimpleChannelInboundHandler<ReceivedPacket> 
 	protected void channelRead0(ChannelHandlerContext arg0, ReceivedPacket arg1) throws Exception {
 		IPacket packet = handler.getPacketMap().constructPacket(arg1.getId());
 		packet.read(arg1.getBuffer());
-		
-		if(packet instanceof Ping){
+
+		if (packet instanceof Ping) {
 			Ping ping = (Ping) packet;
 			sendPacket(new Pong(ping.getId(), ping.getSentTime(), System.currentTimeMillis()));
-		}else if(packet instanceof Pong){
+		} else if (packet instanceof Pong) {
 			Pong pong = (Pong) packet;
-			if(pingSendTimes.get(pong.getId()) == pong.getSentTime()){
+			if (pingSendTimes.get(pong.getId()) == pong.getSentTime()) {
 				ping = pong.getRecievedTime() - pong.getSentTime();
-				log.info("Ping/RTT measured at "+ping+"ms, id="+pong.getId());
 				pingSendTimes.remove(pong.getId());
 				pingIds.clear(pong.getId());
-			}else{
+			} else {
 				log.warn("Incorrect ping/pong sent time, ignoring!");
 			}
 		}
 		handler.handlePacket(packet);
 	}
-	
+
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		
+
 	}
 
 	@SafeVarargs
@@ -95,8 +94,9 @@ public class NetworkManager extends SimpleChannelInboundHandler<ReceivedPacket> 
 		}
 	}
 
-	public void setHandler(INetworkHandler handler) {
-		this.handler = handler;
+	public long getPing() {
+		return ping;
 	}
+
 
 }

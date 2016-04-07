@@ -1,9 +1,10 @@
-package com.error22.lychee;
+package com.error22.lychee.editor;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.error22.lychee.network.Handshake;
+import com.error22.lychee.network.HandshakeResponse;
 import com.error22.lychee.network.INetworkHandler;
 import com.error22.lychee.network.IPacket;
 import com.error22.lychee.network.NetworkClient;
@@ -25,8 +26,13 @@ public class Starter {
 
 			@Override
 			public void handlePacket(IPacket packet) {
-				if (!(packet instanceof Ping || packet instanceof Pong))
-					System.out.println(" handlePacket " + packet);
+				if (packet instanceof Ping || packet instanceof Pong) {
+				}else if(packet instanceof HandshakeResponse){
+					
+				}else{
+					throw new RuntimeException("Unhandled packet!");
+				}
+				
 			}
 
 			@Override

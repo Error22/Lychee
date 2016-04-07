@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.error22.lychee.network.NetworkServer;
+import com.error22.lychee.server.network.ServerNetworkHandler;
 import com.error22.lychee.util.Util;
 
 public class LycheeServer {
@@ -63,7 +64,7 @@ public class LycheeServer {
 		// snapshot.get
 
 		NetworkServer server = new NetworkServer();
-		server.start(null, 1234, TestNetworkHandler.class);
+		server.start(null, 1234, ServerNetworkHandler.class);
 
 		while (true) {
 			try {

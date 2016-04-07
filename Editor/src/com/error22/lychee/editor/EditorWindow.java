@@ -1,4 +1,4 @@
-package com.error22.lychee;
+package com.error22.lychee.editor;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;

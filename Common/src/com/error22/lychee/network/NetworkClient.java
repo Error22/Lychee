@@ -17,8 +17,7 @@ public class NetworkClient {
 	private NetworkManager manager;
 	
 	public void connect(String address, int port, INetworkHandler handler) throws InterruptedException {
-		manager = new NetworkManager();
-		manager.setHandler(handler);
+		manager = new NetworkManager(handler);
 		new Bootstrap().channel(NioSocketChannel.class).group(networkGroup).option(ChannelOption.SO_KEEPALIVE, true)
 				.handler(new ChannelInitializer<Channel>() {
 
@@ -40,7 +39,4 @@ public class NetworkClient {
 		manager.sendPacket(packet);
 	}
 	
-	public void setNetworkHandler(INetworkHandler handler){
-		manager.setHandler(handler);
-	}
 }

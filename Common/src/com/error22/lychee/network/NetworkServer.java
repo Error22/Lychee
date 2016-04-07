@@ -22,15 +22,13 @@ public class NetworkServer {
 			@Override
 			protected void initChannel(Channel channel) throws Exception {
 				ChannelPipeline pipeline = channel.pipeline();
-				NetworkManager manager = new NetworkManager();
-				manager.setHandler(handler.getConstructor().newInstance());
 
 				pipeline.addLast(new ReadTimeoutHandler(130));
 				pipeline.addLast("splitter", new PacketSplitter());
 				pipeline.addLast("decoder", new PacketDecoder());
 				pipeline.addLast("prepender", new PacketPrepender());
 				pipeline.addLast("encoder", new PacketEncoder());
-				pipeline.addLast("manager", manager);
+				pipeline.addLast("manager", new NetworkManager(handler.getConstructor().newInstance()));
 			}
 		}).group(networkGroup).childOption(ChannelOption.SO_KEEPALIVE, true).localAddress(host, port).bind().syncUninterruptibly();
 	}
