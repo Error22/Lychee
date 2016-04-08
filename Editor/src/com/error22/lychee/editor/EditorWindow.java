@@ -3,6 +3,7 @@ package com.error22.lychee.editor;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.EventQueue;
+import java.awt.Rectangle;
 import java.io.IOException;
 
 import javax.swing.JButton;
@@ -30,14 +31,16 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import javax.swing.JToolBar;
+import javax.swing.ImageIcon;
 
 public class EditorWindow {
 
-	private JFrame frame;
-	private JTextField txtSearch;
+	private JFrame frmLychee;
+	private JTextField searchBox;
 	private JTable table;
-	private JTextField textField;
-	private JTable table_1;
+	private JTextField messageBox;
+	private JTable chatTable;
 
 	/**
 	 * Launch the application.
@@ -54,7 +57,7 @@ public class EditorWindow {
 			public void run() {
 				try {
 					EditorWindow window = new EditorWindow();
-					window.frame.setVisible(true);
+					window.frmLychee.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -73,26 +76,27 @@ public class EditorWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 689, 456);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new BorderLayout(0, 0));
+		frmLychee = new JFrame();
+		frmLychee.setTitle("Lychee 1.0 - Error22");
+		frmLychee.setBounds(100, 100, 689, 456);
+		frmLychee.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmLychee.getContentPane().setLayout(new BorderLayout(0, 0));
 		
-		JSplitPane splitPane = new JSplitPane();
-		splitPane.setResizeWeight(0.2);
-		splitPane.setContinuousLayout(true);
-		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
+		JSplitPane mainSplitPane = new JSplitPane();
+		mainSplitPane.setResizeWeight(0.2);
+		mainSplitPane.setContinuousLayout(true);
+		frmLychee.getContentPane().add(mainSplitPane, BorderLayout.CENTER);
 		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		splitPane.setLeftComponent(scrollPane_1);
+		JScrollPane leftScrollPane = new JScrollPane();
+		mainSplitPane.setLeftComponent(leftScrollPane);
 		
-		txtSearch = new JTextField();
-		scrollPane_1.setColumnHeaderView(txtSearch);
-		txtSearch.setText("Search...");
-		txtSearch.setColumns(10);
+		searchBox = new JTextField();
+		leftScrollPane.setColumnHeaderView(searchBox);
+		searchBox.setText("Search...");
+		searchBox.setColumns(10);
 		
-		JTree tree = new JTree();
-		tree.setModel(new DefaultTreeModel(
+		JTree projectTree = new JTree();
+		projectTree.setModel(new DefaultTreeModel(
 			new DefaultMutableTreeNode("Projects") {
 				{
 					DefaultMutableTreeNode node_1;
@@ -110,21 +114,21 @@ public class EditorWindow {
 			}
 		));
 //		tree.setCellRenderer(new CellRenderer());
-		scrollPane_1.setViewportView(tree);
+		leftScrollPane.setViewportView(projectTree);
 		
-		JSplitPane splitPane_1 = new JSplitPane();
-		splitPane_1.setContinuousLayout(true);
-		splitPane_1.setResizeWeight(0.8);
-		splitPane_1.setOrientation(JSplitPane.VERTICAL_SPLIT);
-		splitPane.setRightComponent(splitPane_1);
+		JSplitPane centerSplitPane = new JSplitPane();
+		centerSplitPane.setContinuousLayout(true);
+		centerSplitPane.setResizeWeight(0.8);
+		centerSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+		mainSplitPane.setRightComponent(centerSplitPane);
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		splitPane_1.setLeftComponent(tabbedPane);
+		JTabbedPane editorTabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		centerSplitPane.setLeftComponent(editorTabbedPane);
 		
 		JSplitPane splitPane_2 = new JSplitPane();
 		splitPane_2.setContinuousLayout(true);
 		splitPane_2.setResizeWeight(0.8);
-		tabbedPane.addTab("New tab", null, splitPane_2, null);
+		editorTabbedPane.addTab("New tab", new ImageIcon(EditorWindow.class.getResource("/resources/file_types/java.png")), splitPane_2, null);
 		
 //		JScrollPane scrollPane = new JScrollPane();
 		
@@ -153,6 +157,7 @@ public class EditorWindow {
 				
 			}
 		});
+		
 		
 		area.setText("package abc;\r\n\r\npublic class Example{\r\n\tprivate int example = 0;\r\n\t\r\n\tpublic void example(){\r\n\t\tSystem.out.println(\"hi!\");\r\n\t}\r\n\t\r\n\tpublic static void main(String[] args){\r\n\t\texample();\r\n\t}\r\n}");
 		
@@ -202,11 +207,11 @@ public class EditorWindow {
 		));
 		scrollPane_2.setViewportView(tree_1);
 		
-		JTabbedPane tabbedPane_1 = new JTabbedPane(JTabbedPane.TOP);
-		splitPane_1.setRightComponent(tabbedPane_1);
+		JTabbedPane bottomTabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		centerSplitPane.setRightComponent(bottomTabbedPane);
 		
-		JScrollPane scrollPane_3 = new JScrollPane();
-		tabbedPane_1.addTab("Events", null, scrollPane_3, null);
+		JScrollPane eventsScrollPane = new JScrollPane();
+		bottomTabbedPane.addTab("Events", null, eventsScrollPane, null);
 		
 		table = new JTable();
 		table.setModel(new DefaultTableModel(
@@ -222,28 +227,28 @@ public class EditorWindow {
 		table.getColumnModel().getColumn(0).setPreferredWidth(100);
 		table.getColumnModel().getColumn(0).setMaxWidth(100);
 		table.getColumnModel().getColumn(1).setPreferredWidth(428);
-		scrollPane_3.setViewportView(table);
+		eventsScrollPane.setViewportView(table);
 		
-		JPanel panel = new JPanel();
-		tabbedPane_1.addTab("Chat", null, panel, null);
-		panel.setLayout(new BorderLayout(0, 0));
+		JPanel chatPanel = new JPanel();
+		bottomTabbedPane.addTab("Chat", null, chatPanel, null);
+		chatPanel.setLayout(new BorderLayout(0, 0));
 		
-		JPanel panel_1 = new JPanel();
-		panel.add(panel_1, BorderLayout.SOUTH);
-		panel_1.setLayout(new BorderLayout(0, 0));
+		JPanel chatBottomPanel = new JPanel();
+		chatPanel.add(chatBottomPanel, BorderLayout.SOUTH);
+		chatBottomPanel.setLayout(new BorderLayout(0, 0));
 		
-		textField = new JTextField();
-		panel_1.add(textField, BorderLayout.CENTER);
-		textField.setColumns(10);
+		messageBox = new JTextField();
+		chatBottomPanel.add(messageBox, BorderLayout.CENTER);
+		messageBox.setColumns(10);
 		
-		JButton btnNewButton = new JButton("New button");
-		panel_1.add(btnNewButton, BorderLayout.EAST);
+		JButton sendButton = new JButton("Send");
+		chatBottomPanel.add(sendButton, BorderLayout.EAST);
 		
-		JScrollPane scrollPane_4 = new JScrollPane();
-		panel.add(scrollPane_4, BorderLayout.CENTER);
+		JScrollPane chatScrollPane = new JScrollPane();
+		chatPanel.add(chatScrollPane, BorderLayout.CENTER);
 		
-		table_1 = new JTable();
-		table_1.setModel(new DefaultTableModel(
+		chatTable = new JTable();
+		chatTable.setModel(new DefaultTableModel(
 			new Object[][] {
 				{"07:37 17/03/2016", "Hello"},
 			},
@@ -251,22 +256,28 @@ public class EditorWindow {
 				"Time & Date", "Message"
 			}
 		));
-		table_1.getColumnModel().getColumn(0).setPreferredWidth(100);
-		table_1.getColumnModel().getColumn(0).setMaxWidth(100);
-		table_1.getColumnModel().getColumn(1).setPreferredWidth(281);
-		scrollPane_4.setViewportView(table_1);
+		chatTable.getColumnModel().getColumn(0).setPreferredWidth(100);
+		chatTable.getColumnModel().getColumn(0).setMaxWidth(100);
+		chatTable.getColumnModel().getColumn(1).setPreferredWidth(281);
+		chatScrollPane.setViewportView(chatTable);
 		
-		JLabel lblDisconnected = new JLabel("Disconnected");
-		frame.getContentPane().add(lblDisconnected, BorderLayout.SOUTH);
+		JLabel status = new JLabel("Starting...");
+		frmLychee.getContentPane().add(status, BorderLayout.SOUTH);
 		
 		JMenuBar menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
+		frmLychee.setJMenuBar(menuBar);
 		
-		JMenu mnExample = new JMenu("File");
-		menuBar.add(mnExample);
+		JMenu mnConnection = new JMenu("Connection");
+		mnConnection.setIcon(new ImageIcon(EditorWindow.class.getResource("/resources/menu/connection.gif")));
+		menuBar.add(mnConnection);
 		
-		JMenuItem menuItem_1 = new JMenuItem("123");
-		mnExample.add(menuItem_1);
+		JMenuItem mntmConnect = new JMenuItem("Connect");
+		mntmConnect.setIcon(new ImageIcon(EditorWindow.class.getResource("/resources/menu/connect.gif")));
+		mnConnection.add(mntmConnect);
+		
+		JMenuItem mntmDisconnect = new JMenuItem("Disconnect");
+		mntmDisconnect.setIcon(new ImageIcon(EditorWindow.class.getResource("/resources/menu/disconnect.gif")));
+		mnConnection.add(mntmDisconnect);
 	}
 
 }
