@@ -1,4 +1,4 @@
-package com.error22.lychee.editor;
+package com.error22.lychee.editor.gui;
 
 import java.awt.Component;
 import java.awt.Toolkit;

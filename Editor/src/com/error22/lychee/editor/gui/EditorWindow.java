@@ -1,4 +1,4 @@
-package com.error22.lychee.editor;
+package com.error22.lychee.editor.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -31,44 +31,26 @@ import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
+
+import com.error22.lychee.editor.LycheeEditor;
+
 import javax.swing.JToolBar;
 import javax.swing.ImageIcon;
 
 public class EditorWindow {
-
-	private JFrame frmLychee;
+	private LycheeEditor editor;
+	private JFrame frame;
 	private JTextField searchBox;
 	private JTable table;
 	private JTextField messageBox;
 	private JTable chatTable;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		
-		try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            
-            
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-        }
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					EditorWindow window = new EditorWindow();
-					window.frmLychee.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the application.
+	 * @param lycheeEditor 
 	 */
-	public EditorWindow() {
+	public EditorWindow(LycheeEditor editor) {
+		this.editor = editor;
 		initialize();
 	}
 
@@ -76,16 +58,16 @@ public class EditorWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frmLychee = new JFrame();
-		frmLychee.setTitle("Lychee 1.0 - Error22");
-		frmLychee.setBounds(100, 100, 689, 456);
-		frmLychee.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmLychee.getContentPane().setLayout(new BorderLayout(0, 0));
+		frame = new JFrame();
+		frame.setTitle("Lychee 1.0 - Error22");
+		frame.setBounds(100, 100, 800, 600);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JSplitPane mainSplitPane = new JSplitPane();
 		mainSplitPane.setResizeWeight(0.2);
 		mainSplitPane.setContinuousLayout(true);
-		frmLychee.getContentPane().add(mainSplitPane, BorderLayout.CENTER);
+		frame.getContentPane().add(mainSplitPane, BorderLayout.CENTER);
 		
 		JScrollPane leftScrollPane = new JScrollPane();
 		mainSplitPane.setLeftComponent(leftScrollPane);
@@ -96,23 +78,25 @@ public class EditorWindow {
 		searchBox.setColumns(10);
 		
 		JTree projectTree = new JTree();
-		projectTree.setModel(new DefaultTreeModel(
-			new DefaultMutableTreeNode("Projects") {
-				{
-					DefaultMutableTreeNode node_1;
-					DefaultMutableTreeNode node_2;
-					node_1 = new DefaultMutableTreeNode("StarMade");
-						node_2 = new DefaultMutableTreeNode("com.example");
-							node_2.add(new DefaultMutableTreeNode("StarMade.class"));
-						node_1.add(node_2);
-						node_2 = new DefaultMutableTreeNode("com.example.Lol");
-							node_2.add(new DefaultMutableTreeNode("Content"));
-						node_1.add(node_2);
-					add(node_1);
-					add(new DefaultMutableTreeNode("Lib1"));
-				}
-			}
-		));
+//		projectTree.setModel(new DefaultTreeModel(
+//			new DefaultMutableTreeNode("Projects") {
+//				{
+//					DefaultMutableTreeNode node_1;
+//					DefaultMutableTreeNode node_2;
+//					node_1 = new DefaultMutableTreeNode("StarMade");
+//						node_2 = new DefaultMutableTreeNode("com.example");
+//							node_2.add(new DefaultMutableTreeNode("StarMade.class"));
+//						node_1.add(node_2);
+//						node_2 = new DefaultMutableTreeNode("com.example.Lol");
+//							node_2.add(new DefaultMutableTreeNode("Content"));
+//						node_1.add(node_2);
+//					add(node_1);
+//					add(new DefaultMutableTreeNode("Lib1"));
+//				}
+//			}
+//		));
+		projectTree.setModel(new ExplorerTreeModel(editor));
+		
 //		tree.setCellRenderer(new CellRenderer());
 		leftScrollPane.setViewportView(projectTree);
 		
@@ -122,13 +106,17 @@ public class EditorWindow {
 		centerSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		mainSplitPane.setRightComponent(centerSplitPane);
 		
-		JTabbedPane editorTabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		JTabbedPane editorTabbedPane = new ClosableTabbedPane(JTabbedPane.TOP);
 		centerSplitPane.setLeftComponent(editorTabbedPane);
 		
 		JSplitPane splitPane_2 = new JSplitPane();
 		splitPane_2.setContinuousLayout(true);
-		splitPane_2.setResizeWeight(0.8);
+		splitPane_2.setResizeWeight(0.5);
 		editorTabbedPane.addTab("New tab", new ImageIcon(EditorWindow.class.getResource("/resources/file_types/java.png")), splitPane_2, null);
+		
+		for(int i = 0; i < 20; i++)
+		editorTabbedPane.addTab("New tab - "+i, new ImageIcon(EditorWindow.class.getResource("/resources/file_types/java.png")), new JButton("abc"), null);
+		
 		
 //		JScrollPane scrollPane = new JScrollPane();
 		
@@ -167,6 +155,8 @@ public class EditorWindow {
 		theme.apply(area);
 		
 		RTextScrollPane spane = new RTextScrollPane(area, true);
+		spane.getGutter().setBookmarkingEnabled(true);
+		spane.getGutter().setBookmarkIcon(new ImageIcon(EditorWindow.class.getResource("/resources/menu/connection.gif")));
 		spane.setIconRowHeaderEnabled(true);
 		spane.setFoldIndicatorEnabled(true);
 		splitPane_2.setLeftComponent(spane);
@@ -262,10 +252,10 @@ public class EditorWindow {
 		chatScrollPane.setViewportView(chatTable);
 		
 		JLabel status = new JLabel("Starting...");
-		frmLychee.getContentPane().add(status, BorderLayout.SOUTH);
+		frame.getContentPane().add(status, BorderLayout.SOUTH);
 		
 		JMenuBar menuBar = new JMenuBar();
-		frmLychee.setJMenuBar(menuBar);
+		frame.setJMenuBar(menuBar);
 		
 		JMenu mnConnection = new JMenu("Connection");
 		mnConnection.setIcon(new ImageIcon(EditorWindow.class.getResource("/resources/menu/connection.gif")));
@@ -278,6 +268,10 @@ public class EditorWindow {
 		JMenuItem mntmDisconnect = new JMenuItem("Disconnect");
 		mntmDisconnect.setIcon(new ImageIcon(EditorWindow.class.getResource("/resources/menu/disconnect.gif")));
 		mnConnection.add(mntmDisconnect);
+	}
+	
+	public JFrame getFrame() {
+		return frame;
 	}
 
 }
