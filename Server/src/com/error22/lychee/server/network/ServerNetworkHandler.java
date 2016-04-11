@@ -48,7 +48,7 @@ public class ServerNetworkHandler implements INetworkHandler {
 		}else if(status == 4){
 			handler.handlePacket(packet);
 		} else {
-			throw new RuntimeException("Unhandled packet!");
+			throw new RuntimeException("Unhandled packet! "+packet);
 		}
 	}
 
