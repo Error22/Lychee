@@ -9,66 +9,38 @@ import com.error22.lychee.network.IPacket;
 import com.error22.lychee.network.NetworkExtension;
 import com.error22.lychee.network.PacketBuffer;
 
-public class Handshake implements IPacket {
-	private String address, ident;
-	private int version, port;
+public class EnableExtensions implements IPacket {
 	private ExtensionSet extensionSet;
 
-	public Handshake() {
+	public EnableExtensions() {
 	}
 
-	public Handshake(int version, String ident, String address, int port, ExtensionSet extensionSet) {
-		this.address = address;
-		this.ident = ident;
-		this.version = version;
-		this.port = port;
+	public EnableExtensions(ExtensionSet extensionSet) {
 		this.extensionSet = extensionSet;
 	}
 
 	@Override
 	public void read(INetworkHandler handler, PacketBuffer buffer) throws IOException {
-		version = buffer.readInt();
-		address = buffer.readString();
-		port = buffer.readInt();
-		ident = buffer.readString();
 		extensionSet = new ExtensionSet();
 		int count = buffer.readInt();
 		for (int i = 0; i < count; i++) {
 			String name = buffer.readString();
+			System.out.println(" "+name);
 			if (NetworkExtension.isExtensionKnown(name)){
 				extensionSet.enable(NetworkExtension.getExtension(name));
 			}
 		}
+		System.out.println("left "+buffer.readableBytes());
 	}
 
 	@Override
 	public void write(INetworkHandler handler, PacketBuffer buffer) throws IOException {
-		buffer.writeInt(version);
-		buffer.writeString(address);
-		buffer.writeInt(port);
-		buffer.writeString(ident);
 		NetworkExtension[] extensions = extensionSet.getAllEnabled();
 		buffer.writeInt(extensions.length);
 		for (NetworkExtension e : extensions) {
+			System.out.println(" "+e.getName());
 			buffer.writeString(e.getName());
 		}
-
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public String getIdent() {
-		return ident;
-	}
-
-	public int getVersion() {
-		return version;
-	}
-
-	public int getPort() {
-		return port;
 	}
 
 	public ExtensionSet getExtensionSet() {

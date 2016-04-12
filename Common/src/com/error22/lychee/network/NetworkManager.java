@@ -55,7 +55,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<ReceivedPacket> 
 	@Override
 	protected void channelRead0(ChannelHandlerContext arg0, ReceivedPacket arg1) throws Exception {
 		IPacket packet = handler.getPacketMap().constructPacket(arg1.getId());
-		packet.read(arg1.getBuffer());
+		packet.read(handler, arg1.getBuffer());
 
 		if (packet instanceof Ping) {
 			Ping ping = (Ping) packet;
@@ -80,7 +80,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<ReceivedPacket> 
 
 	@SafeVarargs
 	public final void sendPacket(IPacket packet, GenericFutureListener<? extends Future<? super Void>>... listeners) {
-		SentPacket sentPacket = new SentPacket(handler.getPacketMap().getPacketId(packet.getClass()), packet);
+		SentPacket sentPacket = new SentPacket(handler, handler.getPacketMap().getPacketId(packet.getClass()), packet);
 
 		if (channel.eventLoop().inEventLoop()) {
 			channel.writeAndFlush(sentPacket).addListeners(listeners)

@@ -1,23 +1,27 @@
 package com.error22.lychee.editor.network;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.error22.lychee.editor.LycheeEditor;
+import com.error22.lychee.network.ExtensionSet;
 import com.error22.lychee.network.INetworkHandler;
 import com.error22.lychee.network.IPacket;
+import com.error22.lychee.network.IPairablePacket;
+import com.error22.lychee.network.NetworkExtension;
 import com.error22.lychee.network.NetworkManager;
 import com.error22.lychee.network.PacketMap;
-import com.error22.lychee.network.packets.ClientType;
-import com.error22.lychee.network.packets.EnterMode;
+import com.error22.lychee.network.packets.EnableExtensions;
 import com.error22.lychee.network.packets.Handshake;
 import com.error22.lychee.network.packets.HandshakeResponse;
 import com.error22.lychee.network.packets.Ping;
 import com.error22.lychee.network.packets.Pong;
-import com.error22.lychee.network.packets.SelectVersion;
+import com.error22.lychee.network.packets.ProjectList;
+import com.error22.lychee.network.packets.RequestProjectList;
+import com.error22.lychee.util.ThreadPauser;
 
 public class ClientNetworkHandler implements INetworkHandler {
 	private static int clientVersion = 1;
@@ -27,12 +31,16 @@ public class ClientNetworkHandler implements INetworkHandler {
 	private LycheeEditor editor;
 	private String address;
 	private int port;
-	private boolean routed;
+	private ExtensionSet extensions;
+	private HashMap<UUID, ThreadPauser> threadPausers;
 
 	public ClientNetworkHandler(LycheeEditor editor, String address, int port) {
 		this.editor = editor;
 		this.address = address;
 		this.port = port;
+		threadPausers = new HashMap<UUID, ThreadPauser>();
+		extensions = new ExtensionSet();
+		extensions.enable(NetworkExtension.Base);
 	}
 
 	@Override
@@ -40,25 +48,46 @@ public class ClientNetworkHandler implements INetworkHandler {
 		networkManager = manager;
 		editor.setConnectionStatus(ConnectionStatus.Handshaking);
 		log.info(" connected");
-		sendPacket(new Handshake(clientVersion, clientIdent, address, port));
+		sendPacket(new Handshake(clientVersion, clientIdent, address, port, allSupportedExtensions));
 	}
 
 	@Override
 	public void handlePacket(IPacket packet) {
+		log.info("handlePacket "+packet);
 		if (packet instanceof Ping || packet instanceof Pong) {
-		} else if (!routed && packet instanceof HandshakeResponse) {
+		} else if (packet instanceof HandshakeResponse) {
 			HandshakeResponse response = (HandshakeResponse) packet;
 			log.info("Server ident: " + response.getIdent());
 
-			int targetVersion = response.getVersion() > clientVersion ? clientVersion : response.getVersion();
-			sendPacket(new SelectVersion(targetVersion));
-			sendPacket(new EnterMode(ClientType.Editor));
-			editor.setConnection(getServerConnectionHandler(targetVersion));
-			editor.getConnection().init(editor, this);
+			if (response.getVersion() != clientVersion) {
+				log.error("Server is not running the same base version as client!");
+				throw new RuntimeException("ADD DISCONNECT");
+			}
+
+			ExtensionSet wantedExtensions = new ExtensionSet();
+			NetworkExtension[] serverExtensions = response.getExtensionSet().getAllEnabled();
+			for (NetworkExtension e : serverExtensions) {
+				if (allSupportedExtensions.isEnabled(e)) {
+					wantedExtensions.enable(e);
+				}
+			}
+
+			sendPacket(new EnableExtensions(wantedExtensions));
+			extensions.enableAll(wantedExtensions);
+
 			editor.setConnectionStatus(ConnectionStatus.Connected);
-			routed = true;
-		} else if (routed) {
-			editor.getConnection().handlePacket(packet);
+
+			new Thread(){
+				public void run() {
+					ProjectList list = (ProjectList) sendPairedPacket(new RequestProjectList(true, UUID.randomUUID()));
+					
+					log.info("list "+list);
+				};
+			}.start();
+			
+		} else if (extensions.isEnabled(NetworkExtension.PairedPackets) && packet instanceof IPairablePacket
+				&& ((IPairablePacket) packet).isPaired()) {
+			threadPausers.get(((IPairablePacket) packet).getPairId()).poke(packet);
 		} else {
 			throw new RuntimeException("Unhandled packet!");
 		}
@@ -67,32 +96,43 @@ public class ClientNetworkHandler implements INetworkHandler {
 
 	@Override
 	public PacketMap getPacketMap() {
-		return routed ? editor.getConnection().getPacketMap() : PacketMap.getHandshakePacketMap();
+		return PacketMap.getMainPacketMap();
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	@Override
+	public ExtensionSet getExtensions() {
+		return extensions;
 	}
 
 	public void sendPacket(IPacket packet) {
+		if (!extensions.areEnabled(packet.getRequiredExtensions())) {
+			throw new RuntimeException(
+					packet.getClass() + " requires " + packet.getRequiredExtensions() + " to be enabled!");
+		}
 		networkManager.sendPacket(packet);
 	}
 
-	private static HashMap<Integer, Class<? extends IServerConnection>> versionMappings;
-
-	private static void registerHandler(int version, Class<? extends IServerConnection> handler) {
-		versionMappings.put(version, handler);
+	public IPairablePacket sendPairedPacket(IPairablePacket packet) {
+		ThreadPauser pauser = new ThreadPauser(true, false);
+		threadPausers.put(packet.getPairId(), pauser);
+		sendPacket(packet);
+		return (IPairablePacket) pauser.awaitPoke();
 	}
 
-	private static IServerConnection getServerConnectionHandler(int version) {
-		try {
-			return versionMappings.get(version).getConstructor().newInstance();
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
-			throw new RuntimeException("Unsupported server connection handler, " + version);
-		}
-	}
+	private static ExtensionSet allSupportedExtensions;
 
 	static {
-		versionMappings = new HashMap<Integer, Class<? extends IServerConnection>>();
-
-		registerHandler(1, V1ServerConnection.class);
+		allSupportedExtensions = new ExtensionSet();
+		allSupportedExtensions.enable(NetworkExtension.ProjectManagement);
+		allSupportedExtensions.enable(NetworkExtension.PairedPackets);
 	}
 
 }

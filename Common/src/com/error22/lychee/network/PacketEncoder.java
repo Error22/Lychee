@@ -11,7 +11,7 @@ public class PacketEncoder extends MessageToByteEncoder<SentPacket> {
 	protected void encode(ChannelHandlerContext ctx, SentPacket packet, ByteBuf out) throws IOException {
 		PacketBuffer buffer = new PacketBuffer(out);
 		buffer.writeInt(packet.getId());
-		packet.getPacket().write(buffer);
+		packet.getPacket().write(packet.getHandler(), buffer);
 	}
 
 }

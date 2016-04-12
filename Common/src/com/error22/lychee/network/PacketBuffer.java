@@ -8,6 +8,7 @@ import java.nio.ByteOrder;
 import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 import java.nio.charset.Charset;
+import java.util.UUID;
 
 import com.google.common.base.Charsets;
 
@@ -22,25 +23,33 @@ public class PacketBuffer extends ByteBuf {
 		this.buffer = buffer;
 	}
 
+	public UUID readUUID() throws IOException{
+		return UUID.fromString(readString());
+	}
+	
+	public void writeUUID(UUID id) throws IOException{
+		writeString(id.toString());
+	}
+	
 	public String readString() throws IOException {
 		int size = this.readInt();
 
 		if (size < 0) {
-			throw new IOException("The received encoded string buffer length is less than zero! Weird string!");
+			throw new IOException("Incorrect string length!");
 		} else {
 			return new String(this.readBytes(size).array(), Charsets.UTF_8);
 		}
 	}
 
-	public void writeString(String p_150785_1_) throws IOException {
-		byte[] var2 = p_150785_1_.getBytes(Charsets.UTF_8);
+	public void writeString(String str) throws IOException {
+		byte[] data = str.getBytes(Charsets.UTF_8);
 
-		if (var2.length > Short.MAX_VALUE) {
+		if (data.length > Short.MAX_VALUE) {
 			throw new IOException(
-					"String too big (was " + p_150785_1_.length() + " bytes encoded, max " + Short.MAX_VALUE + ")");
+					"Strings can not exceed " + Short.MAX_VALUE + " bytes!");
 		} else {
-			this.writeInt(var2.length);
-			this.writeBytes(var2);
+			this.writeInt(data.length);
+			this.writeBytes(data);
 		}
 	}
 

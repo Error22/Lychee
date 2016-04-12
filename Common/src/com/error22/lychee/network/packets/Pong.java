@@ -1,8 +1,11 @@
 package com.error22.lychee.network.packets;
 
 import java.io.IOException;
+import java.util.EnumSet;
 
+import com.error22.lychee.network.INetworkHandler;
 import com.error22.lychee.network.IPacket;
+import com.error22.lychee.network.NetworkExtension;
 import com.error22.lychee.network.PacketBuffer;
 
 public class Pong implements IPacket {
@@ -19,14 +22,14 @@ public class Pong implements IPacket {
 	}
 
 	@Override
-	public void read(PacketBuffer buffer) throws IOException {
+	public void read(INetworkHandler handler, PacketBuffer buffer) throws IOException {
 		id = buffer.readInt();
 		sentTime = buffer.readLong();
 		recievedTime = buffer.readLong();
 	}
 
 	@Override
-	public void write(PacketBuffer buffer) throws IOException {
+	public void write(INetworkHandler handler, PacketBuffer buffer) throws IOException {
 		buffer.writeInt(id);
 		buffer.writeLong(sentTime);
 		buffer.writeLong(recievedTime);
@@ -44,4 +47,9 @@ public class Pong implements IPacket {
 		return recievedTime;
 	}
 
+	@Override
+	public EnumSet<NetworkExtension> getRequiredExtensions() {
+		return EnumSet.of(NetworkExtension.Base);
+	}
+	
 }

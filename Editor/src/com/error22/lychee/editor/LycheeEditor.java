@@ -13,7 +13,6 @@ import org.apache.logging.log4j.Logger;
 import com.error22.lychee.editor.gui.EditorWindow;
 import com.error22.lychee.editor.network.ClientNetworkHandler;
 import com.error22.lychee.editor.network.ConnectionStatus;
-import com.error22.lychee.editor.network.IServerConnection;
 import com.error22.lychee.network.NetworkClient;
 import com.error22.lychee.util.Util;
 
@@ -22,7 +21,6 @@ public class LycheeEditor {
 	public static LycheeEditor INSTANCE;
 	private EditorWindow editorWindow;
 	private HashMap<UUID, IProject> projects;
-	private IServerConnection connection;
 	private ClientNetworkHandler networkHandler;
 	private NetworkClient networkClient;
 	private ConnectionStatus connectionStatus;
@@ -50,7 +48,6 @@ public class LycheeEditor {
 	public void connectToServer(String address, int port) {
 		try {
 			connectionStatus = ConnectionStatus.Connecting;
-			connection = null;
 			networkHandler = new ClientNetworkHandler(this, address, port);
 			networkClient = new NetworkClient();
 			networkClient.connect(address, port, networkHandler);
@@ -75,10 +72,6 @@ public class LycheeEditor {
 		return editorWindow;
 	}
 
-	public IServerConnection getConnection() {
-		return connection;
-	}
-
 	public ClientNetworkHandler getNetworkHandler() {
 		return networkHandler;
 	}
@@ -93,10 +86,6 @@ public class LycheeEditor {
 
 	public void setConnectionStatus(ConnectionStatus connectionStatus) {
 		this.connectionStatus = connectionStatus;
-	}
-
-	public void setConnection(IServerConnection connection) {
-		this.connection = connection;
 	}
 
 	public static void main(String[] args) {

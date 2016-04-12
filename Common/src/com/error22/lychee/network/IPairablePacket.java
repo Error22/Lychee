@@ -2,12 +2,10 @@ package com.error22.lychee.network;
 
 import java.util.UUID;
 
-public interface IPairedPacket {
-	
-	public UUID getPairId();
+public interface IPairablePacket extends IPacket{
 	
 	public boolean isPaired();
 	
-	public boolean isResponse();
+	public UUID getPairId();
 	
 }
