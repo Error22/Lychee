@@ -3,7 +3,8 @@ package com.error22.lychee.network;
 import java.util.HashMap;
 
 public enum NetworkExtension {
-	Base("base"), Authentication("authentication"), PairedPackets("paired_packets"), ProjectManagement("project_management");
+	Base("EXT_BASE"), Authentication("EXT_AUTHENTICATION"), PairedPackets("EXT_PAIRED_PACKETS"), ProjectManagement(
+			"EXT_PROJECT_MANAGEMENT");
 
 	private String name;
 
