@@ -1,4 +1,6 @@
-#Lychee
+
+
+#Lychee [![Slack Status](http://error22.herokuapp.com/badge.svg)](http://error22.herokuapp.com/)
 Lychee is an open source deobfuscator with real time collaboration support allowing multiple people to work together in real time to deobfuscate a program, no need to manage commits and resolve conflicts. The server works to keep everyone up to date and to output the final mappings that can be used to deobfuscate other copies of the code. 
 
 ##Reason for creation
