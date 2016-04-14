@@ -25,12 +25,10 @@ public class EnableExtensions implements IPacket {
 		int count = buffer.readInt();
 		for (int i = 0; i < count; i++) {
 			String name = buffer.readString();
-			System.out.println(" "+name);
 			if (NetworkExtension.isExtensionKnown(name)){
 				extensionSet.enable(NetworkExtension.getExtension(name));
 			}
 		}
-		System.out.println("left "+buffer.readableBytes());
 	}
 
 	@Override
@@ -38,7 +36,6 @@ public class EnableExtensions implements IPacket {
 		NetworkExtension[] extensions = extensionSet.getAllEnabled();
 		buffer.writeInt(extensions.length);
 		for (NetworkExtension e : extensions) {
-			System.out.println(" "+e.getName());
 			buffer.writeString(e.getName());
 		}
 	}

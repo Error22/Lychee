@@ -29,10 +29,6 @@ public class LycheeEditor {
 		projects = new HashMap<UUID, IProject>();
 		connectionStatus = ConnectionStatus.Disconnected;
 		
-		connectToServer("127.0.0.1", 1234);
-
-		addProject(new JavaProject(UUID.randomUUID(), "StarMade"));
-
 		log.info("Loading GUI...");
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

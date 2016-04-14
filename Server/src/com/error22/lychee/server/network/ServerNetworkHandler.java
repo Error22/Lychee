@@ -72,6 +72,7 @@ public class ServerNetworkHandler implements INetworkHandler {
 
 	static {
 		allSupportedExtensions = new ExtensionSet();
+		allSupportedExtensions.enable(NetworkExtension.Base);
 		allSupportedExtensions.enable(NetworkExtension.ProjectManagement);
 		allSupportedExtensions.enable(NetworkExtension.PairedPackets);
 	}

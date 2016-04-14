@@ -1,11 +1,11 @@
 package com.error22.lychee.editor.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.EventQueue;
-import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,8 +19,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
@@ -34,9 +32,6 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 
 import com.error22.lychee.editor.LycheeEditor;
 
-import javax.swing.JToolBar;
-import javax.swing.ImageIcon;
-
 public class EditorWindow {
 	private LycheeEditor editor;
 	private JFrame frame;
@@ -44,6 +39,7 @@ public class EditorWindow {
 	private JTable table;
 	private JTextField messageBox;
 	private JTable chatTable;
+	private ConnectDialog connectDialog;
 
 	/**
 	 * Create the application.
@@ -261,8 +257,18 @@ public class EditorWindow {
 		mnConnection.setIcon(new ImageIcon(EditorWindow.class.getResource("/resources/menu/connection.gif")));
 		menuBar.add(mnConnection);
 		
+		connectDialog = new ConnectDialog();
 		JMenuItem mntmConnect = new JMenuItem("Connect");
 		mntmConnect.setIcon(new ImageIcon(EditorWindow.class.getResource("/resources/menu/connect.gif")));
+		mntmConnect.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(!connectDialog.isVisible()){
+					connectDialog.setVisible(true);
+				}
+			}
+		});
 		mnConnection.add(mntmConnect);
 		
 		JMenuItem mntmDisconnect = new JMenuItem("Disconnect");

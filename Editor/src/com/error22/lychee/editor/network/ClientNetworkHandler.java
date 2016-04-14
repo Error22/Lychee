@@ -1,6 +1,8 @@
 package com.error22.lychee.editor.network;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,9 +21,8 @@ import com.error22.lychee.network.packets.Handshake;
 import com.error22.lychee.network.packets.HandshakeResponse;
 import com.error22.lychee.network.packets.Ping;
 import com.error22.lychee.network.packets.Pong;
-import com.error22.lychee.network.packets.ProjectList;
-import com.error22.lychee.network.packets.RequestProjectList;
 import com.error22.lychee.util.ThreadPauser;
+import com.error22.lychee.util.ThreadPauser.EmptyObj;
 
 public class ClientNetworkHandler implements INetworkHandler {
 	private static int clientVersion = 1;
@@ -29,16 +30,20 @@ public class ClientNetworkHandler implements INetworkHandler {
 	private static Logger log = LogManager.getLogger();
 	private NetworkManager networkManager;
 	private LycheeEditor editor;
-	private String address;
+	private String address, serverIdent;
 	private int port;
 	private ExtensionSet extensions;
 	private HashMap<UUID, ThreadPauser> threadPausers;
+	private List<ThreadPauser> awaitingConnected;
+	private boolean fullyConnected;
 
 	public ClientNetworkHandler(LycheeEditor editor, String address, int port) {
 		this.editor = editor;
 		this.address = address;
 		this.port = port;
 		threadPausers = new HashMap<UUID, ThreadPauser>();
+		awaitingConnected = new ArrayList<ThreadPauser>();
+		fullyConnected = false;
 		extensions = new ExtensionSet();
 		extensions.enable(NetworkExtension.Base);
 	}
@@ -53,10 +58,11 @@ public class ClientNetworkHandler implements INetworkHandler {
 
 	@Override
 	public void handlePacket(IPacket packet) {
-		log.info("handlePacket "+packet);
+		log.info("handlePacket " + packet);
 		if (packet instanceof Ping || packet instanceof Pong) {
 		} else if (packet instanceof HandshakeResponse) {
 			HandshakeResponse response = (HandshakeResponse) packet;
+			serverIdent = response.getIdent();
 			log.info("Server ident: " + response.getIdent());
 
 			if (response.getVersion() != clientVersion) {
@@ -76,15 +82,11 @@ public class ClientNetworkHandler implements INetworkHandler {
 			extensions.enableAll(wantedExtensions);
 
 			editor.setConnectionStatus(ConnectionStatus.Connected);
-
-			new Thread(){
-				public void run() {
-					ProjectList list = (ProjectList) sendPairedPacket(new RequestProjectList(true, UUID.randomUUID()));
-					
-					log.info("list "+list);
-				};
-			}.start();
 			
+			for(ThreadPauser pauser : awaitingConnected){
+				pauser.poke(new EmptyObj());
+			}
+
 		} else if (extensions.isEnabled(NetworkExtension.PairedPackets) && packet instanceof IPairablePacket
 				&& ((IPairablePacket) packet).isPaired()) {
 			threadPausers.get(((IPairablePacket) packet).getPairId()).poke(packet);
@@ -92,6 +94,14 @@ public class ClientNetworkHandler implements INetworkHandler {
 			throw new RuntimeException("Unhandled packet!");
 		}
 
+	}
+	
+	public void awaitFullConnected(){
+		if(!fullyConnected){
+			ThreadPauser pauser = new ThreadPauser(true, false);
+			awaitingConnected.add(pauser);
+			pauser.awaitPoke();
+		}
 	}
 
 	@Override
@@ -107,6 +117,10 @@ public class ClientNetworkHandler implements INetworkHandler {
 		return port;
 	}
 
+	public String getServerIdent() {
+		return serverIdent;
+	}
+	
 	@Override
 	public ExtensionSet getExtensions() {
 		return extensions;
@@ -127,10 +141,11 @@ public class ClientNetworkHandler implements INetworkHandler {
 		return (IPairablePacket) pauser.awaitPoke();
 	}
 
-	private static ExtensionSet allSupportedExtensions;
+	public static ExtensionSet allSupportedExtensions;
 
 	static {
 		allSupportedExtensions = new ExtensionSet();
+		allSupportedExtensions.enable(NetworkExtension.Base);
 		allSupportedExtensions.enable(NetworkExtension.ProjectManagement);
 		allSupportedExtensions.enable(NetworkExtension.PairedPackets);
 	}

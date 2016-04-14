@@ -71,4 +71,7 @@ public class ThreadPauser {
 
 	public static class StateReset {
 	}
+	
+	public static class EmptyObj{
+	}
 }
