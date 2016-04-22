@@ -5,20 +5,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class JavaSourceFolder implements ISourceEntry {
+public class JavaPackage implements ISourceEntry {
 	private UUID id;
 	private String name;
-	private HashMap<UUID, JavaPackage> packages;
+	private HashMap<UUID, JavaFile> files;
 
-	public JavaSourceFolder(UUID id, String name) {
+	public JavaPackage(UUID id, String name) {
 		this.id = id;
 		this.name = name;
-		packages = new HashMap<UUID, JavaPackage>();
-		
-		JavaPackage p1 = new JavaPackage(UUID.randomUUID(), "com.company.example");
-		packages.put(p1.getId(), p1);
-		JavaPackage p2 = new JavaPackage(UUID.randomUUID(), "com.company.example.cool");
-		packages.put(p2.getId(), p2);
+		files = new HashMap<UUID, JavaFile>();
+//		
+		JavaFile f1 = new JavaFile(UUID.randomUUID(), "Example");
+		files.put(f1.getId(), f1);
+		JavaFile f2 = new JavaFile(UUID.randomUUID(), "OtherExample");
+		files.put(f2.getId(), f2);
 		
 	}
 
@@ -34,7 +34,7 @@ public class JavaSourceFolder implements ISourceEntry {
 
 	@Override
 	public List<ISourceEntry> getEntries() {
-		return new ArrayList<ISourceEntry>(packages.values());
+		return new ArrayList<ISourceEntry>(files.values());
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package com.error22.lychee.editor;
 
 import java.util.UUID;
 
-import com.error22.lychee.editor.gui.IExplorerTreeNode;
+import com.error22.lychee.editor.gui.ExplorerTreeNode;
 
 public interface IProject {
 
@@ -12,6 +12,6 @@ public interface IProject {
 
 	public ProjectType getType();
 
-	public IExplorerTreeNode getNode();
+	public ExplorerTreeNode getNode(ExplorerTreeNode parent);
 
 }

@@ -1,27 +1,85 @@
 package com.error22.lychee.editor.gui;
 
-import com.error22.lychee.editor.ISourceFolder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-public class SourceTreeNode implements IExplorerTreeNode {
-	private ISourceFolder sourceFolder;
+import com.error22.lychee.editor.ISourceEntry;
+import com.error22.lychee.editor.gui.Comparators.SourceEntryNameComparator;
 
-	public SourceTreeNode(ISourceFolder folder) {
-		this.sourceFolder = folder;
+public class SourceTreeNode extends ExplorerTreeNode {
+	private ISourceEntry entry;
+	private List<UUID> childrenIds;
+
+	public SourceTreeNode(ExplorerTreeNode parent, ISourceEntry entry) {
+		super(parent);
+		this.entry = entry;
+		childrenIds = new ArrayList<UUID>();
+		updateModel();
 	}
 
-	@Override
-	public int getChildCount() {
-		return 0;
+	public void updateModel() {
+		if (!entry.isFolder()) {
+			return;
+		}
+
+		List<ISourceEntry> entries = entry.getEntries();
+		Collections.sort(entries, new SourceEntryNameComparator());
+		List<UUID> ids = entries.stream().map(ISourceEntry::getId).collect(Collectors.toList());
+
+		int[] data = IntStream.range(0, childrenIds.size()).filter(index -> !ids.contains(childrenIds.get(index)))
+				.toArray();
+		int offset = 0;
+		for (int index : data) {
+			remove(index + offset);
+			offset++;
+		}
+
+		// remove(toRemove);
+		childrenIds = childrenIds.stream().filter(id -> ids.contains(id)).collect(Collectors.toList());
+
+		int originalPos = 0;
+		for (int i = 0; i < entries.size(); i++) {
+			if (originalPos < childrenIds.size() && childrenIds.get(originalPos).equals(entries.get(i).getId())) {
+				originalPos++;
+				continue;
+			}
+
+			if (childrenIds.contains(entries.get(i).getId())) {
+				throw new RuntimeException("Some sort of reorder has occured?");
+			}
+			insert(i, new SourceTreeNode(this, entries.get(i)));
+			// indices.add(originalPos);
+			// nodes.add(new SourceTreeNode(this, entries[i]));
+		}
+
+		// List<Integer> indices = new ArrayList<Integer>();
+		// List<ExplorerTreeNode> nodes = new ArrayList<ExplorerTreeNode>();
+
+		// add(node);
+
+		// int originalPos = 0;
+		// for (int i = 0; i < entries.length; i++) {
+		// if (originalPos < childrenIds.length &&
+		// childrenIds[originalPos].equals(entries[i].getId())) {
+		// originalPos++;
+		// continue;
+		// }
+		// indices.add(originalPos);
+		// nodes.add(new SourceTreeNode(this, entries[i]));
+		// }
+
+		// insert(indices, nodes);
+		childrenIds = ids;
+
 	}
 
-	@Override
-	public Object getChild(int index) {
-		return null;
-	}
-	
 	@Override
 	public int hashCode() {
-		return sourceFolder.getId().hashCode();
+		return entry.getId().hashCode();
 	}
 
 	@Override
@@ -33,12 +91,23 @@ public class SourceTreeNode implements IExplorerTreeNode {
 		if (getClass() != obj.getClass())
 			return false;
 		SourceTreeNode other = (SourceTreeNode) obj;
-		return sourceFolder.getId().equals(other.sourceFolder.getId());
+		return entry.getId().equals(other.entry.getId());
 	}
 
 	@Override
 	public String toString() {
-		return sourceFolder.getName();
+		return entry.getName();
 	}
 
+	@Override
+	public boolean isLeaf() {
+		return !entry.isFolder();
+	}
+
+	@Override
+	public void onClick(int count) {
+		if(count == 2){
+			entry.doubleClicked();
+		}
+	}
 }

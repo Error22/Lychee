@@ -14,6 +14,8 @@ import com.error22.lychee.editor.gui.EditorWindow;
 import com.error22.lychee.editor.network.ClientNetworkHandler;
 import com.error22.lychee.editor.network.ConnectionStatus;
 import com.error22.lychee.network.NetworkClient;
+import com.error22.lychee.network.packets.ProjectList;
+import com.error22.lychee.network.packets.RequestProjectList;
 import com.error22.lychee.util.Util;
 
 public class LycheeEditor {
@@ -28,7 +30,7 @@ public class LycheeEditor {
 	public void init() {
 		projects = new HashMap<UUID, IProject>();
 		connectionStatus = ConnectionStatus.Disconnected;
-		
+
 		log.info("Loading GUI...");
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -37,8 +39,14 @@ public class LycheeEditor {
 			e1.printStackTrace();
 		}
 
+		IProject project = new JavaProject(this, UUID.randomUUID(), "123");
+		projects.put(project.getId(), project);
+		
 		editorWindow = new EditorWindow(this);
 		editorWindow.getFrame().setVisible(true);
+		
+		
+		
 	}
 
 	public void connectToServer(String address, int port) {
@@ -52,8 +60,32 @@ public class LycheeEditor {
 		}
 	}
 
+	public void completeConnection() {
+		new Thread("ServerConnection") {
+			@Override
+			public void run() {
+				ProjectList list = (ProjectList) networkHandler
+						.sendPairedPacket(new RequestProjectList(true, UUID.randomUUID()));
+
+				log.info("got " + list);
+
+				for (int i = 0; i < list.getIds().length; i++) {
+					UUID id = list.getIds()[i];
+					String name = list.getNames()[i];
+					String type = list.getTypes()[i];
+
+					log.info("Loading project " + id + ":" + name + " of type " + type);
+
+					addProject(new JavaProject(LycheeEditor.this, id, name));
+				}
+
+			}
+		}.start();
+	}
+
 	public void addProject(IProject project) {
 		projects.put(project.getId(), project);
+		editorWindow.getExplorerTreeModel().getRootNode().updateModel();
 	}
 
 	public Collection<IProject> getProjects() {

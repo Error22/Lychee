@@ -84,18 +84,27 @@ public class ConnectDialog extends JFrame {
 						try {
 							LycheeEditor.INSTANCE.connectToServer(address, port);
 							ClientNetworkHandler handler = LycheeEditor.INSTANCE.getNetworkHandler();
-							
+
 							lblStatus.setText("Initialising connection...");
 							handler.awaitFullConnected();
-							
+
 							if (username != null && username.length() > 0) {
 								lblStatus.setText("Authenticating...");
-								if(!handler.getExtensions().isEnabled(NetworkExtension.Authentication)){
+								if (!handler.getExtensions().isEnabled(NetworkExtension.Authentication)) {
 									throw new Exception("Server does not support authentication");
 								}
-								//TODO: Add authentication
+								// TODO: Add authentication
 								throw new Exception("Authentication is not yet supported (editor-side)");
 							}
+
+							// TODO: Ensure server supports the needed
+							// extensions for the editor to function, not all
+							// extensions are required however but without a few
+							// basic ones the client can not function at all and
+							// there is no point in connecting.
+							//Needed:
+							//EXT_BASE, EXT_AUTHENTICATION, EXT_PAIRED_PACKETS, EXT_PROJECT_MANAGEMENT
+							
 
 							lblStatus.setText("Connected!");
 							JOptionPane.showMessageDialog(ConnectDialog.this,
@@ -105,6 +114,7 @@ public class ConnectDialog extends JFrame {
 											+ ClientNetworkHandler.allSupportedExtensions.getInternalSet().size(),
 									"Connected to server!", JOptionPane.INFORMATION_MESSAGE);
 							ConnectDialog.this.dispose();
+							LycheeEditor.INSTANCE.completeConnection();
 							return;
 						} catch (Exception e) {
 							e.printStackTrace();

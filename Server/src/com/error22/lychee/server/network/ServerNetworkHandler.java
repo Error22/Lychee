@@ -18,6 +18,8 @@ import com.error22.lychee.network.packets.Ping;
 import com.error22.lychee.network.packets.Pong;
 import com.error22.lychee.network.packets.ProjectList;
 import com.error22.lychee.network.packets.RequestProjectList;
+import com.error22.lychee.server.IProject;
+import com.error22.lychee.server.LycheeServer;
 
 public class ServerNetworkHandler implements INetworkHandler {
 	private static Logger log = LogManager.getLogger();
@@ -25,10 +27,12 @@ public class ServerNetworkHandler implements INetworkHandler {
 	private static String serverIdent = "lychee-server-1.0-official";
 	private NetworkManager manager;
 	private ExtensionSet extensions;
+	private LycheeServer server;
 
 	@Override
 	public void connected(NetworkManager networkManager) {
 		System.out.print(" connected");
+		server = LycheeServer.INSTANCE;
 		manager = networkManager;
 		extensions = new ExtensionSet();
 		extensions.enable(NetworkExtension.Base);
@@ -36,18 +40,34 @@ public class ServerNetworkHandler implements INetworkHandler {
 
 	@Override
 	public void handlePacket(IPacket packet) {
-		log.info("handlePacket "+packet);
+		log.info("handlePacket " + packet);
 		if (packet instanceof Ping || packet instanceof Pong) {
 		} else if (packet instanceof Handshake) {
 			sendPacket(new HandshakeResponse(serverVersion, serverIdent, allSupportedExtensions));
 		} else if (packet instanceof EnableExtensions) {
 			extensions.enableAll(((EnableExtensions) packet).getExtensionSet());
 		} else if (packet instanceof RequestProjectList) {
-			sendPacket(new ProjectList(true, ((RequestProjectList) packet).getPairId(), new UUID[0], new String[0],
-					new String[0]));
+			handleRequestProjectList((RequestProjectList) packet);
 		} else {
 			throw new RuntimeException("Unhandled packet! " + packet);
 		}
+	}
+
+	private void handleRequestProjectList(RequestProjectList packet) {
+		UUID pairId = packet.getPairId();
+
+		IProject[] projects = server.getProjects().toArray(new IProject[0]);
+		UUID[] ids = new UUID[projects.length];
+		String[] names = new String[projects.length];
+		String[] types = new String[projects.length];
+
+		for (int i = 0; i < projects.length; i++) {
+			ids[i] = projects[i].getId();
+			names[i] = projects[i].getName();
+			types[i] = projects[i].getType().getNetworkName();
+		}
+
+		sendPacket(new ProjectList(true, pairId, ids, names, types));
 	}
 
 	public void sendPacket(IPacket packet) {

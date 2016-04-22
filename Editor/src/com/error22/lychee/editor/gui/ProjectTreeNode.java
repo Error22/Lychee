@@ -2,23 +2,12 @@ package com.error22.lychee.editor.gui;
 
 import com.error22.lychee.editor.IProject;
 
-public class ProjectTreeNode implements IExplorerTreeNode {
+public class ProjectTreeNode extends ExplorerTreeNode {
 	private IProject project;
-	private IExplorerTreeNode[] children;
 
-	public ProjectTreeNode(IProject project, IExplorerTreeNode[] children) {
+	public ProjectTreeNode(ExplorerTreeNode parent, IProject project) {
+		super(parent);
 		this.project = project;
-		this.children = children;
-	}
-
-	@Override
-	public int getChildCount() {
-		return children.length;
-	}
-
-	@Override
-	public Object getChild(int index) {
-		return children[index];
 	}
 
 	@Override
@@ -43,4 +32,13 @@ public class ProjectTreeNode implements IExplorerTreeNode {
 		return project.getName();
 	}
 
+	@Override
+	public boolean isLeaf() {
+		return false;
+	}
+
+	@Override
+	public void onClick(int count) {
+	}
+	
 }

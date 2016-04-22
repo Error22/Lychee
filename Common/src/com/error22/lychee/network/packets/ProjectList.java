@@ -5,7 +5,6 @@ import java.util.EnumSet;
 import java.util.UUID;
 
 import com.error22.lychee.network.INetworkHandler;
-import com.error22.lychee.network.IPacket;
 import com.error22.lychee.network.IPairablePacket;
 import com.error22.lychee.network.NetworkExtension;
 import com.error22.lychee.network.PacketBuffer;
@@ -30,9 +29,9 @@ public class ProjectList implements IPairablePacket {
 
 	@Override
 	public void read(INetworkHandler handler, PacketBuffer buffer) throws IOException {
-		if (handler.getExtensions().isEnabled(NetworkExtension.PairedPackets)){
+		if (handler.getExtensions().isEnabled(NetworkExtension.PairedPackets)) {
 			isPaired = buffer.readBoolean();
-			if(isPaired){
+			if (isPaired) {
 				pairId = buffer.readUUID();
 			}
 		}
@@ -49,9 +48,9 @@ public class ProjectList implements IPairablePacket {
 
 	@Override
 	public void write(INetworkHandler handler, PacketBuffer buffer) throws IOException {
-		if(handler.getExtensions().isEnabled(NetworkExtension.PairedPackets)){
+		if (handler.getExtensions().isEnabled(NetworkExtension.PairedPackets)) {
 			buffer.writeBoolean(isPaired);
-			if(isPaired){
+			if (isPaired) {
 				buffer.writeUUID(pairId);
 			}
 		}
@@ -66,6 +65,18 @@ public class ProjectList implements IPairablePacket {
 	@Override
 	public EnumSet<NetworkExtension> getRequiredExtensions() {
 		return EnumSet.of(NetworkExtension.ProjectManagement);
+	}
+
+	public UUID[] getIds() {
+		return ids;
+	}
+
+	public String[] getNames() {
+		return names;
+	}
+
+	public String[] getTypes() {
+		return types;
 	}
 
 	@Override

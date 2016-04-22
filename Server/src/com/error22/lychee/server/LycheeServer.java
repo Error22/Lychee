@@ -1,5 +1,7 @@
 package com.error22.lychee.server;
 
+import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -7,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.error22.lychee.network.NetworkServer;
+import com.error22.lychee.server.java.JavaProject;
 import com.error22.lychee.server.network.ServerNetworkHandler;
 import com.error22.lychee.util.Util;
 
@@ -18,9 +21,8 @@ public class LycheeServer {
 	public void init() {
 		projects = new HashMap<UUID, IProject>();
 
-		// JavaProject exampleProject = new JavaProject(UUID.randomUUID(),
-		// "Example", new File("Projects/Example"));
-		// addProject(exampleProject);
+		JavaProject exampleProject = new JavaProject(UUID.randomUUID(), "Example", new File("Projects/Example"));
+		addProject(exampleProject);
 		// exampleProject.addJar(UUID.randomUUID(), "TestInput2.jar",
 		// JarType.Main);
 		// exampleProject.loadAllJars();
@@ -65,8 +67,8 @@ public class LycheeServer {
 
 		NetworkServer server = new NetworkServer();
 		server.start(null, 1234, ServerNetworkHandler.class);
-		
-		//TODO: Replace
+
+		// TODO: Replace
 		while (true) {
 			try {
 				Thread.sleep(Integer.MAX_VALUE);
@@ -80,8 +82,8 @@ public class LycheeServer {
 		projects.put(project.getId(), project);
 	}
 
-	public HashMap<UUID, IProject> getProjects() {
-		return projects;
+	public Collection<IProject> getProjects() {
+		return projects.values();
 	}
 
 	public static void main(String[] args) {

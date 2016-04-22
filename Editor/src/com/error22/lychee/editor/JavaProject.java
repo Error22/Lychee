@@ -2,21 +2,19 @@ package com.error22.lychee.editor;
 
 import java.util.UUID;
 
-import com.error22.lychee.editor.gui.IExplorerTreeNode;
+import com.error22.lychee.editor.gui.ExplorerTreeNode;
 import com.error22.lychee.editor.gui.ProjectTreeNode;
 import com.error22.lychee.editor.gui.SourceTreeNode;
 
-public class JavaProject implements IProject{
+public class JavaProject implements IProject {
+	private LycheeEditor editor;
 	private UUID id;
 	private String name;
 	private ProjectTreeNode node;
-	
-	public JavaProject(UUID id, String name) {
+
+	public JavaProject(LycheeEditor editor, UUID id, String name) {
 		this.id = id;
 		this.name = name;
-		IExplorerTreeNode[] children = new IExplorerTreeNode[1];
-		children[0] = new SourceTreeNode(new JavaSourceFolder(UUID.randomUUID(), "src"));
-		node = new ProjectTreeNode(this, children);
 	}
 
 	@Override
@@ -28,9 +26,13 @@ public class JavaProject implements IProject{
 	public String getName() {
 		return name;
 	}
-	
+
 	@Override
-	public IExplorerTreeNode getNode() {
+	public ExplorerTreeNode getNode(ExplorerTreeNode parent) {
+		if(node == null){
+			node = new ProjectTreeNode(parent, this);
+			node.add(new SourceTreeNode(node, new JavaSourceFolder(UUID.randomUUID(), "src")));
+		}
 		return node;
 	}
 
@@ -38,7 +40,5 @@ public class JavaProject implements IProject{
 	public ProjectType getType() {
 		return ProjectType.Java;
 	}
-
-	
 
 }
