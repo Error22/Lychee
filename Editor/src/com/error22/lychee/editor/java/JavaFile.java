@@ -1,7 +1,9 @@
-package com.error22.lychee.editor;
+package com.error22.lychee.editor.java;
 
 import java.util.List;
 import java.util.UUID;
+
+import com.error22.lychee.editor.ISourceEntry;
 
 public class JavaFile implements ISourceEntry {
 	private UUID id;

@@ -38,7 +38,6 @@ public class SourceTreeNode extends ExplorerTreeNode {
 			offset++;
 		}
 
-		// remove(toRemove);
 		childrenIds = childrenIds.stream().filter(id -> ids.contains(id)).collect(Collectors.toList());
 
 		int originalPos = 0;
@@ -52,29 +51,9 @@ public class SourceTreeNode extends ExplorerTreeNode {
 				throw new RuntimeException("Some sort of reorder has occured?");
 			}
 			insert(i, new SourceTreeNode(this, entries.get(i)));
-			// indices.add(originalPos);
-			// nodes.add(new SourceTreeNode(this, entries[i]));
 		}
 
-		// List<Integer> indices = new ArrayList<Integer>();
-		// List<ExplorerTreeNode> nodes = new ArrayList<ExplorerTreeNode>();
-
-		// add(node);
-
-		// int originalPos = 0;
-		// for (int i = 0; i < entries.length; i++) {
-		// if (originalPos < childrenIds.length &&
-		// childrenIds[originalPos].equals(entries[i].getId())) {
-		// originalPos++;
-		// continue;
-		// }
-		// indices.add(originalPos);
-		// nodes.add(new SourceTreeNode(this, entries[i]));
-		// }
-
-		// insert(indices, nodes);
 		childrenIds = ids;
-
 	}
 
 	@Override

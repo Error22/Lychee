@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.error22.lychee.editor.gui.EditorWindow;
+import com.error22.lychee.editor.java.JavaProject;
 import com.error22.lychee.editor.network.ClientNetworkHandler;
 import com.error22.lychee.editor.network.ConnectionStatus;
 import com.error22.lychee.network.NetworkClient;

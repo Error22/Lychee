@@ -1,9 +1,11 @@
-package com.error22.lychee.editor;
+package com.error22.lychee.editor.java;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
+import com.error22.lychee.editor.ISourceEntry;
 
 public class JavaPackage implements ISourceEntry {
 	private UUID id;
@@ -14,7 +16,7 @@ public class JavaPackage implements ISourceEntry {
 		this.id = id;
 		this.name = name;
 		files = new HashMap<UUID, JavaFile>();
-//		
+		
 		JavaFile f1 = new JavaFile(UUID.randomUUID(), "Example");
 		files.put(f1.getId(), f1);
 		JavaFile f2 = new JavaFile(UUID.randomUUID(), "OtherExample");

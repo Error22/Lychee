@@ -1,7 +1,10 @@
-package com.error22.lychee.editor;
+package com.error22.lychee.editor.java;
 
 import java.util.UUID;
 
+import com.error22.lychee.editor.IProject;
+import com.error22.lychee.editor.LycheeEditor;
+import com.error22.lychee.editor.ProjectType;
 import com.error22.lychee.editor.gui.ExplorerTreeNode;
 import com.error22.lychee.editor.gui.ProjectTreeNode;
 import com.error22.lychee.editor.gui.SourceTreeNode;

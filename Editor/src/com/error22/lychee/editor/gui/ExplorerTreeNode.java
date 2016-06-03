@@ -40,65 +40,7 @@ public abstract class ExplorerTreeNode {
 		getModel().getModelListeners().stream().forEach(Listener -> Listener.treeNodesInserted(event));
 	}
 
-	// public void insert(List<Integer> idList, List<ExplorerTreeNode> nodes) {
-	// log.info("Inserting " + idList.size() + " " + idList.toString() + " " +
-	// nodes.toString());
-	// ExplorerTreeNode[] newChildren = new ExplorerTreeNode[children.length +
-	// idList.size()];
-	//
-	// int originalPos = 0;
-	// int insert = 0;
-	// List<Integer> insertedAt = new ArrayList<Integer>();
-	// for (int i = 0; i < newChildren.length; i++) {
-	// if (!idList.contains(originalPos)) {
-	// newChildren[i] = children[originalPos];
-	// originalPos++;
-	// } else {
-	// newChildren[i] = nodes.get(insert);
-	// insertedAt.add(i);
-	// insert++;
-	// }
-	// }
-	//
-	// log.info(" " + insertedAt);
-	//
-	// children = newChildren;
-	//
-	// TreeModelEvent event = new TreeModelEvent(this, getPath(),
-	// Ints.toArray(insertedAt), nodes.toArray());
-	// getModel().getModelListeners().stream().forEach(Listener ->
-	// Listener.treeNodesInserted(event));
-	//
-	// }
-
-	// public void remove(List<Integer> ids) {
-	// log.info("Removing " + ids.size());
-	// ExplorerTreeNode[] newChildren = new ExplorerTreeNode[children.length -
-	// ids.size()];
-	//
-	// int newPos = 0;
-	// for (int i = 0; i < children.length; i++) {
-	// if (!ids.contains(i)) {
-	// newChildren[newPos] = children[i];
-	// newPos++;
-	// }
-	// }
-	//
-	// Collections.sort(ids);
-	//
-	// ExplorerTreeNode[] removing = ids.stream().map(index -> children[index])
-	// .toArray(size -> new ExplorerTreeNode[size]);
-	// children = newChildren;
-	//
-	// TreeModelEvent event = new TreeModelEvent(this, path, Ints.toArray(ids),
-	// removing);
-	// model.getModelListeners().forEach(listener ->
-	// listener.treeNodesRemoved(event));
-	//
-	// }
-
 	public void insert(int position, ExplorerTreeNode node) {
-		log.info("Inserting " + node + " at " + position);
 		ExplorerTreeNode[] newChildren = new ExplorerTreeNode[children.length + 1];
 
 		if (position > 0) {
@@ -113,7 +55,6 @@ public abstract class ExplorerTreeNode {
 
 		TreeModelEvent event = new TreeModelEvent(this, path, new int[] { position }, new ExplorerTreeNode[] { node });
 		getModel().getModelListeners().stream().forEach(Listener -> Listener.treeNodesInserted(event));
-
 	}
 
 	public void remove(int position) {
@@ -171,7 +112,7 @@ public abstract class ExplorerTreeNode {
 	}
 
 	public abstract boolean isLeaf();
-	
+
 	public abstract void onClick(int count);
 
 }

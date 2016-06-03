@@ -1,6 +1,7 @@
 package com.error22.lychee.editor.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -19,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.event.ChangeEvent;
@@ -34,6 +36,7 @@ import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import com.error22.lychee.editor.LycheeEditor;
+import com.error22.lychee.editor.java.JavaEditor;
 
 public class EditorWindow {
 	private LycheeEditor editor;
@@ -103,94 +106,13 @@ public class EditorWindow {
 		JTabbedPane editorTabbedPane = new ClosableTabbedPane(JTabbedPane.TOP);
 		centerSplitPane.setLeftComponent(editorTabbedPane);
 
-		JSplitPane splitPane_2 = new JSplitPane();
-		splitPane_2.setContinuousLayout(true);
-		splitPane_2.setResizeWeight(0.5);
-		editorTabbedPane.addTab("New tab",
-				new ImageIcon(EditorWindow.class.getResource("/resources/file_types/java.png")), splitPane_2, null);
+		// editorTabbedPane.addTab("New tab",
+		// new
+		// ImageIcon(EditorWindow.class.getResource("/resources/file_types/java.png")),
+		// splitPane_2, null);
 
-		for (int i = 0; i < 20; i++)
-			editorTabbedPane.addTab("New tab - " + i,
-					new ImageIcon(EditorWindow.class.getResource("/resources/file_types/java.png")), new JButton("abc"),
-					null);
-
-		// JScrollPane scrollPane = new JScrollPane();
-
-		Theme theme = null;
-		try {
-			theme = Theme
-					.load(EditorWindow.class.getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/eclipse.xml"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		RSyntaxTextArea area = new RSyntaxTextArea();
-		area.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-		area.setEditable(false);
-		area.setAnimateBracketMatching(true);
-		area.setAntiAliasingEnabled(true);
-		area.setClearWhitespaceLinesEnabled(true);
-		area.setCodeFoldingEnabled(true);
-		area.setPaintMarkOccurrencesBorder(true);
-		area.setPaintMatchedBracketPair(true);
-		area.setMarkOccurrences(true);
-		area.getCaret().addChangeListener(new ChangeListener() {
-			@Override
-			public void stateChanged(ChangeEvent paramChangeEvent) {
-				area.getCaret().setVisible(true);
-
-			}
-		});
-
-		area.setText(
-				"package abc;\r\n\r\npublic class Example{\r\n\tprivate int example = 0;\r\n\t\r\n\tpublic void example(){\r\n\t\tSystem.out.println(\"hi!\");\r\n\t}\r\n\t\r\n\tpublic static void main(String[] args){\r\n\t\texample();\r\n\t}\r\n}");
-
-		area.convertSpacesToTabs();
-
-		theme.apply(area);
-
-		RTextScrollPane spane = new RTextScrollPane(area, true);
-		spane.getGutter().setBookmarkingEnabled(true);
-		spane.getGutter()
-				.setBookmarkIcon(new ImageIcon(EditorWindow.class.getResource("/resources/menu/connection.gif")));
-		spane.setIconRowHeaderEnabled(true);
-		spane.setFoldIndicatorEnabled(true);
-		splitPane_2.setLeftComponent(spane);
-
-		JScrollPane scrollPane_2 = new JScrollPane();
-		splitPane_2.setRightComponent(scrollPane_2);
-
-		JTree tree_1 = new JTree();
-		tree_1.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("Example") {
-			{
-				DefaultMutableTreeNode node_1;
-				DefaultMutableTreeNode node_2;
-				node_1 = new DefaultMutableTreeNode("variables");
-				node_1.add(new DefaultMutableTreeNode("local public"));
-				node_2 = new DefaultMutableTreeNode("local private");
-				node_2.add(new DefaultMutableTreeNode("time"));
-				node_2.add(new DefaultMutableTreeNode("name"));
-				node_1.add(node_2);
-				node_1.add(new DefaultMutableTreeNode("local protected"));
-				node_1.add(new DefaultMutableTreeNode("static public"));
-				node_1.add(new DefaultMutableTreeNode("static private"));
-				node_1.add(new DefaultMutableTreeNode("static protected"));
-				add(node_1);
-				node_1 = new DefaultMutableTreeNode("methods");
-				node_1.add(new DefaultMutableTreeNode("local public"));
-				node_1.add(new DefaultMutableTreeNode("local private"));
-				node_1.add(new DefaultMutableTreeNode("local protected"));
-				node_2 = new DefaultMutableTreeNode("static public");
-				node_2.add(new DefaultMutableTreeNode("String main(String[] args)"));
-				node_1.add(node_2);
-				node_1.add(new DefaultMutableTreeNode("static private"));
-				node_1.add(new DefaultMutableTreeNode("static protected"));
-				add(node_1);
-				add(new DefaultMutableTreeNode("patches"));
-			}
-		}));
-		scrollPane_2.setViewportView(tree_1);
+		editorTabbedPane.addTab("Welcome", new JScrollPane(new JTextArea(
+				"Welcome to Lychee\nYou will need to connect to a server.\nYou can close this tab using the 'X' button.")));
 
 		JTabbedPane bottomTabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		centerSplitPane.setRightComponent(bottomTabbedPane);

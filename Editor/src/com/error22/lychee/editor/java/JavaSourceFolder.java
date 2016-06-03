@@ -1,9 +1,11 @@
-package com.error22.lychee.editor;
+package com.error22.lychee.editor.java;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
+import com.error22.lychee.editor.ISourceEntry;
 
 public class JavaSourceFolder implements ISourceEntry {
 	private UUID id;
