@@ -84,7 +84,7 @@ public class EditorWindow {
 			}
 
 		});
-		// tree.setCellRenderer(new CellRenderer());
+		projectTree.setCellRenderer(new CellRenderer());
 		leftScrollPane.setViewportView(projectTree);
 
 		JSplitPane centerSplitPane = new JSplitPane();
@@ -151,12 +151,12 @@ public class EditorWindow {
 		frame.setJMenuBar(menuBar);
 
 		JMenu mnConnection = new JMenu("Connection");
-		mnConnection.setIcon(new ImageIcon(EditorWindow.class.getResource("/resources/menu/connection.gif")));
+		mnConnection.setIcon(LycheeEditor.INSTANCE.getIcon("/resources/menu/connection.gif"));
 		menuBar.add(mnConnection);
 
 		connectDialog = new ConnectDialog();
 		JMenuItem mntmConnect = new JMenuItem("Connect");
-		mntmConnect.setIcon(new ImageIcon(EditorWindow.class.getResource("/resources/menu/connect.gif")));
+		mntmConnect.setIcon(LycheeEditor.INSTANCE.getIcon("/resources/menu/connect.gif"));
 		mntmConnect.addActionListener(new ActionListener() {
 
 			@Override
@@ -169,7 +169,7 @@ public class EditorWindow {
 		mnConnection.add(mntmConnect);
 
 		JMenuItem mntmDisconnect = new JMenuItem("Disconnect");
-		mntmDisconnect.setIcon(new ImageIcon(EditorWindow.class.getResource("/resources/menu/disconnect.gif")));
+		mntmDisconnect.setIcon(LycheeEditor.INSTANCE.getIcon("/resources/menu/disconnect.gif"));
 		mnConnection.add(mntmDisconnect);
 	}
 	

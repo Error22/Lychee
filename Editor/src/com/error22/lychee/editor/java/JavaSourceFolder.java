@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import javax.swing.Icon;
+
 import com.error22.lychee.editor.ISourceEntry;
+import com.error22.lychee.editor.LycheeEditor;
 
 public class JavaSourceFolder implements ISourceEntry {
 	private UUID id;
@@ -46,6 +49,11 @@ public class JavaSourceFolder implements ISourceEntry {
 
 	@Override
 	public void doubleClicked() {
+	}
+
+	@Override
+	public Icon getIcon() {
+		return LycheeEditor.INSTANCE.getIcon("/resources/java/package_folder.gif");
 	}
 
 }

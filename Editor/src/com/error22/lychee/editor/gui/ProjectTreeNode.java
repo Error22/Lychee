@@ -1,5 +1,7 @@
 package com.error22.lychee.editor.gui;
 
+import javax.swing.Icon;
+
 import com.error22.lychee.editor.IProject;
 
 public class ProjectTreeNode extends ExplorerTreeNode {
@@ -39,6 +41,11 @@ public class ProjectTreeNode extends ExplorerTreeNode {
 
 	@Override
 	public void onClick(int count) {
+	}
+
+	@Override
+	public Icon getIcon() {
+		return project.getIcon();
 	}
 	
 }

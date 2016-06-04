@@ -6,6 +6,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.swing.Icon;
+
 import com.error22.lychee.editor.IProject;
 import com.error22.lychee.editor.LycheeEditor;
 import com.error22.lychee.editor.gui.Comparators.ProjectNameComparator;
@@ -91,6 +93,11 @@ public class RootTreeNode extends ExplorerTreeNode {
 
 	@Override
 	public void onClick(int count) {
+	}
+
+	@Override
+	public Icon getIcon() {
+		return null;
 	}
 
 }

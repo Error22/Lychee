@@ -2,6 +2,8 @@ package com.error22.lychee.editor.java;
 
 import java.util.UUID;
 
+import javax.swing.Icon;
+
 import com.error22.lychee.editor.IProject;
 import com.error22.lychee.editor.LycheeEditor;
 import com.error22.lychee.editor.ProjectType;
@@ -42,6 +44,11 @@ public class JavaProject implements IProject {
 	@Override
 	public ProjectType getType() {
 		return ProjectType.Java;
+	}
+
+	@Override
+	public Icon getIcon() {
+		return LycheeEditor.INSTANCE.getIcon("/resources/general/project.gif");
 	}
 
 }

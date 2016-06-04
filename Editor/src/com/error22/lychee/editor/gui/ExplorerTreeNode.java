@@ -1,5 +1,6 @@
 package com.error22.lychee.editor.gui;
 
+import javax.swing.Icon;
 import javax.swing.event.TreeModelEvent;
 
 import org.apache.logging.log4j.LogManager;
@@ -114,5 +115,7 @@ public abstract class ExplorerTreeNode {
 	public abstract boolean isLeaf();
 
 	public abstract void onClick(int count);
+
+	public abstract Icon getIcon();
 
 }

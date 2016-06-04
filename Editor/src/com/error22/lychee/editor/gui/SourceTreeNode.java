@@ -7,6 +7,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.swing.Icon;
+
 import com.error22.lychee.editor.ISourceEntry;
 import com.error22.lychee.editor.gui.Comparators.SourceEntryNameComparator;
 
@@ -88,5 +90,10 @@ public class SourceTreeNode extends ExplorerTreeNode {
 		if(count == 2){
 			entry.doubleClicked();
 		}
+	}
+
+	@Override
+	public Icon getIcon() {
+		return entry.getIcon();
 	}
 }

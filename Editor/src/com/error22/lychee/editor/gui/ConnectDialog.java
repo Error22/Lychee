@@ -40,7 +40,7 @@ public class ConnectDialog extends JFrame {
 
 		JLabel lblIfYouWould = new JLabel("If you would like to authenticate please enter the username and password");
 
-		JLabel lblBelowHoweverIt = new JLabel("below, however it is not necessary.");
+		JLabel lblBelowHoweverIt = new JLabel("below, however it is not necessary for all servers.");
 
 		JLabel lblUsername = new JLabel("Username");
 
@@ -68,7 +68,7 @@ public class ConnectDialog extends JFrame {
 				int tempPort = 1234;
 
 				if (tempAddress.contains(":")) {
-					tempPort = Integer.parseInt(tempAddress.substring(tempAddress.indexOf(":")));
+					tempPort = Integer.parseInt(tempAddress.substring(tempAddress.indexOf(":")+1));
 					tempAddress = tempAddress.substring(0, tempAddress.indexOf(":"));
 				}
 

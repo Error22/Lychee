@@ -1,6 +1,6 @@
 package com.error22.lychee.editor;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 
 public interface IEditor {
@@ -11,7 +11,7 @@ public interface IEditor {
 	
 	public String getHoverToolTip();
 	
-	public ImageIcon getIcon();
+	public Icon getIcon();
 	
 	public JComponent getMainPane();
 

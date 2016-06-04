@@ -1,6 +1,6 @@
 package com.error22.lychee.editor;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -29,7 +29,7 @@ public class WelcomeEditor implements IEditor {
 	}
 
 	@Override
-	public ImageIcon getIcon() {
+	public Icon getIcon() {
 		return null;
 	}
 

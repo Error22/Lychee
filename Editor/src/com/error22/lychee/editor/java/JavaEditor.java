@@ -2,6 +2,7 @@ package com.error22.lychee.editor.java;
 
 import java.io.IOException;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -18,6 +19,7 @@ import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import com.error22.lychee.editor.IEditor;
+import com.error22.lychee.editor.LycheeEditor;
 import com.error22.lychee.editor.gui.EditorWindow;
 
 public class JavaEditor implements IEditor {
@@ -114,8 +116,8 @@ public class JavaEditor implements IEditor {
 	}
 
 	@Override
-	public ImageIcon getIcon() {
-		return new ImageIcon(JavaEditor.class.getResource("/resources/file_types/java.png"));
+	public Icon getIcon() {
+		return LycheeEditor.INSTANCE.getIcon("/resources/java/source.png");
 	}
 
 	@Override

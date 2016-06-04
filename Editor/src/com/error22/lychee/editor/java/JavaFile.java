@@ -3,6 +3,8 @@ package com.error22.lychee.editor.java;
 import java.util.List;
 import java.util.UUID;
 
+import javax.swing.Icon;
+
 import com.error22.lychee.editor.ISourceEntry;
 import com.error22.lychee.editor.LycheeEditor;
 import com.error22.lychee.editor.gui.EditorWindow;
@@ -54,6 +56,11 @@ public class JavaFile implements ISourceEntry {
 
 	public String getPath() {
 		return parent.getName() + "." + getName();
+	}
+
+	@Override
+	public Icon getIcon() {
+		return LycheeEditor.INSTANCE.getIcon("/resources/java/source.png");
 	}
 
 }

@@ -1,9 +1,13 @@
 package com.error22.lychee.editor;
 
+import java.awt.Toolkit;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -24,12 +28,14 @@ public class LycheeEditor {
 	public static LycheeEditor INSTANCE;
 	private EditorWindow editorWindow;
 	private HashMap<UUID, IProject> projects;
+	private HashMap<String, Icon> icons;
 	private ClientNetworkHandler networkHandler;
 	private NetworkClient networkClient;
 	private ConnectionStatus connectionStatus;
 
 	public void init() {
 		projects = new HashMap<UUID, IProject>();
+		icons = new HashMap<String, Icon>();
 		connectionStatus = ConnectionStatus.Disconnected;
 
 		log.info("Loading GUI...");
@@ -42,12 +48,10 @@ public class LycheeEditor {
 
 		IProject project = new JavaProject(this, UUID.randomUUID(), "123");
 		projects.put(project.getId(), project);
-		
+
 		editorWindow = new EditorWindow(this);
 		editorWindow.getFrame().setVisible(true);
-		
-		
-		
+
 	}
 
 	public void connectToServer(String address, int port) {
@@ -115,6 +119,12 @@ public class LycheeEditor {
 
 	public void setConnectionStatus(ConnectionStatus connectionStatus) {
 		this.connectionStatus = connectionStatus;
+	}
+
+	public Icon getIcon(String path) {
+		if (!icons.containsKey(path))
+			icons.put(path, new ImageIcon(Toolkit.getDefaultToolkit().getImage(LycheeEditor.class.getResource(path))));
+		return icons.get(path);
 	}
 
 	public static void main(String[] args) {

@@ -3,6 +3,8 @@ package com.error22.lychee.editor;
 import java.util.List;
 import java.util.UUID;
 
+import javax.swing.Icon;
+
 public interface ISourceEntry {
 
 	public UUID getId();
@@ -14,5 +16,7 @@ public interface ISourceEntry {
 	public boolean isFolder();
 
 	public void doubleClicked();
+
+	public Icon getIcon();
 	
 }
