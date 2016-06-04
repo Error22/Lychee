@@ -3,6 +3,7 @@ package com.error22.lychee.editor.java;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
@@ -16,17 +17,20 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+import com.error22.lychee.editor.IEditor;
 import com.error22.lychee.editor.gui.EditorWindow;
 
-public class JavaEditor {
+public class JavaEditor implements IEditor {
+	private JavaFile file;
 	private JSplitPane mainSplitPane;
 	private RSyntaxTextArea textArea;
-	
-	public JavaEditor(){
+
+	public JavaEditor(JavaFile file) {
+		this.file = file;
 		mainSplitPane = new JSplitPane();
 		mainSplitPane.setContinuousLayout(true);
 		mainSplitPane.setResizeWeight(0.5);
-		
+
 		textArea = new RSyntaxTextArea();
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		textArea.setEditable(false);
@@ -48,9 +52,9 @@ public class JavaEditor {
 				"package abc;\r\n\r\npublic class Example{\r\n\tprivate int example = 0;\r\n\t\r\n\tpublic void example(){\r\n\t\tSystem.out.println(\"hi!\");\r\n\t}\r\n\t\r\n\tpublic static void main(String[] args){\r\n\t\texample();\r\n\t}\r\n}");
 
 		textArea.convertSpacesToTabs();
-		
+
 		theme.apply(textArea);
-		
+
 		RTextScrollPane scrollPane = new RTextScrollPane(textArea, true);
 		scrollPane.getGutter().setBookmarkingEnabled(true);
 		scrollPane.getGutter()
@@ -58,7 +62,7 @@ public class JavaEditor {
 		scrollPane.setIconRowHeaderEnabled(true);
 		scrollPane.setFoldIndicatorEnabled(true);
 		mainSplitPane.setLeftComponent(scrollPane);
-		
+
 		JScrollPane treeScrollPane = new JScrollPane();
 		mainSplitPane.setRightComponent(treeScrollPane);
 
@@ -92,15 +96,56 @@ public class JavaEditor {
 			}
 		}));
 		treeScrollPane.setViewportView(tree);
-
-		
 	}
-	
-	public JSplitPane getMainPane() {
+
+	@Override
+	public String getTitle() {
+		return file.getName();
+	}
+
+	@Override
+	public String getCloseToolTip() {
+		return "Close " + file.getName();
+	}
+
+	@Override
+	public String getHoverToolTip() {
+		return file.getPath();
+	}
+
+	@Override
+	public ImageIcon getIcon() {
+		return new ImageIcon(JavaEditor.class.getResource("/resources/file_types/java.png"));
+	}
+
+	@Override
+	public JComponent getMainPane() {
 		return mainSplitPane;
 	}
 
+	@Override
+	public void destroy() {
+		file.destroyEditor();
+	}
+
+	@Override
+	public int hashCode() {
+		return file.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		return file.equals(((JavaEditor) obj).file);
+	}
+
 	private static Theme theme;
+
 	static {
 		try {
 			theme = Theme.load(JavaEditor.class.getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/eclipse.xml"));
@@ -108,4 +153,5 @@ public class JavaEditor {
 			e.printStackTrace();
 		}
 	}
+
 }

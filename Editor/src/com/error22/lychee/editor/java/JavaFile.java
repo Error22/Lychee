@@ -4,14 +4,19 @@ import java.util.List;
 import java.util.UUID;
 
 import com.error22.lychee.editor.ISourceEntry;
+import com.error22.lychee.editor.LycheeEditor;
+import com.error22.lychee.editor.gui.EditorWindow;
 
 public class JavaFile implements ISourceEntry {
 	private UUID id;
+	private JavaPackage parent;
 	private String name;
+	private JavaEditor editor;
 
-	public JavaFile(UUID id, String name) {
+	public JavaFile(UUID id, JavaPackage parent, String name) {
 		this.id = id;
 		this.name = name;
+		this.parent = parent;
 	}
 
 	@Override
@@ -36,9 +41,19 @@ public class JavaFile implements ISourceEntry {
 
 	@Override
 	public void doubleClicked() {
-		System.out.println("Open java file please!");
+		EditorWindow window = LycheeEditor.INSTANCE.getEditorWindow();
+		if (editor == null) {
+			editor = new JavaEditor(this);
+		}
+		window.openEditor(editor);
 	}
-	
-	
+
+	public void destroyEditor() {
+		editor = null;
+	}
+
+	public String getPath() {
+		return parent.getName() + "." + getName();
+	}
 
 }

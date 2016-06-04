@@ -12,7 +12,10 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
+
+import com.error22.lychee.editor.IEditor;
 
 public class ClosableTabbedPane extends JTabbedPane {
 
@@ -79,17 +82,9 @@ public class ClosableTabbedPane extends JTabbedPane {
 			if (closeUnderMouse(me.getX(), me.getY())) {
 				boolean isToCloseTab = tabAboutToClose(selectedTab);
 				if (isToCloseTab && selectedTab > -1) {
-					String tab = tabbedPane.getTitleAt(selectedTab);
-					// if (tab.contains("Error")){
-					System.out.println("remove " + tab);
-					// GrooveJaar.results.remove(tab);
-					// }else{
-					// System.out.println("remove "+tab.substring(0,
-					// tab.lastIndexOf(" (")).hashCode());
-					//// GrooveJaar.results.remove(tab.substring(0,
-					// tab.lastIndexOf(" (")).hashCode());
-					// }
+					IEditor editor = (IEditor)((JComponent)tabbedPane.getComponent(selectedTab)).getClientProperty(IEditor.class);
 					tabbedPane.removeTabAt(selectedTab);
+					editor.destroy();
 
 				}
 				selectedTab = tabbedPane.getSelectedIndex();
@@ -109,12 +104,16 @@ public class ClosableTabbedPane extends JTabbedPane {
 			if (tabbedPane.getTabCount() > 0)
 				if (closeUnderMouse(meX, meY)) {
 					tabbedPane.setCursor(new Cursor(Cursor.HAND_CURSOR));
-					if (selectedTab > -1)
-						tabbedPane.setToolTipTextAt(selectedTab, "Close " + tabbedPane.getTitleAt(selectedTab));
+					if (selectedTab > -1){
+						IEditor editor = (IEditor)((JComponent)tabbedPane.getComponent(selectedTab)).getClientProperty(IEditor.class);
+						tabbedPane.setToolTipTextAt(selectedTab, editor.getCloseToolTip());
+					}
 				} else {
 					tabbedPane.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-					if (selectedTab > -1)
-						tabbedPane.setToolTipTextAt(selectedTab, "");
+					if (selectedTab > -1){
+						IEditor editor = (IEditor)((JComponent)tabbedPane.getComponent(selectedTab)).getClientProperty(IEditor.class);
+						tabbedPane.setToolTipTextAt(selectedTab, editor.getHoverToolTip());
+					}
 				}
 		}
 
@@ -125,8 +124,6 @@ public class ClosableTabbedPane extends JTabbedPane {
 		}
 
 		public void paint(Graphics g) {
-			;
-
 			int tabCount = tabbedPane.getTabCount();
 			for (int j = 0; j < tabCount; j++)
 				if (tabbedPane.getComponent(j).isShowing()) {

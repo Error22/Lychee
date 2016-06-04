@@ -1,12 +1,10 @@
 package com.error22.lychee.editor.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -20,23 +18,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rsyntaxtextarea.Theme;
-import org.fife.ui.rtextarea.RTextScrollPane;
-
+import com.error22.lychee.editor.IEditor;
 import com.error22.lychee.editor.LycheeEditor;
-import com.error22.lychee.editor.java.JavaEditor;
+import com.error22.lychee.editor.WelcomeEditor;
 
 public class EditorWindow {
 	private LycheeEditor editor;
@@ -47,6 +36,7 @@ public class EditorWindow {
 	private JTable chatTable;
 	private ConnectDialog connectDialog;
 	private ExplorerTreeModel explorerTreeModel;
+	private JTabbedPane editorTabbedPane;
 
 	/**
 	 * Create the application.
@@ -103,17 +93,11 @@ public class EditorWindow {
 		centerSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		mainSplitPane.setRightComponent(centerSplitPane);
 
-		JTabbedPane editorTabbedPane = new ClosableTabbedPane(JTabbedPane.TOP);
+		editorTabbedPane = new ClosableTabbedPane(JTabbedPane.TOP);
 		centerSplitPane.setLeftComponent(editorTabbedPane);
 
-		// editorTabbedPane.addTab("New tab",
-		// new
-		// ImageIcon(EditorWindow.class.getResource("/resources/file_types/java.png")),
-		// splitPane_2, null);
-
-		editorTabbedPane.addTab("Welcome", new JScrollPane(new JTextArea(
-				"Welcome to Lychee\nYou will need to connect to a server.\nYou can close this tab using the 'X' button.")));
-
+		openEditor(new WelcomeEditor());
+		
 		JTabbedPane bottomTabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		centerSplitPane.setRightComponent(bottomTabbedPane);
 
@@ -188,6 +172,18 @@ public class EditorWindow {
 		mntmDisconnect.setIcon(new ImageIcon(EditorWindow.class.getResource("/resources/menu/disconnect.gif")));
 		mnConnection.add(mntmDisconnect);
 	}
+	
+	public void openEditor(IEditor editor2) {
+		int index = editorTabbedPane.indexOfComponent(editor2.getMainPane());
+		
+		if(index == -1){
+			editor2.getMainPane().putClientProperty(IEditor.class, editor2);
+			editorTabbedPane.addTab(editor2.getTitle(), editor2.getIcon(), editor2.getMainPane(), editor2.getHoverToolTip());
+			index = editorTabbedPane.indexOfComponent(editor2.getMainPane());
+		}
+		
+		editorTabbedPane.setSelectedIndex(index);
+	}
 
 	public ExplorerTreeModel getExplorerTreeModel() {
 		return explorerTreeModel;
@@ -196,5 +192,7 @@ public class EditorWindow {
 	public JFrame getFrame() {
 		return frame;
 	}
+
+	
 
 }

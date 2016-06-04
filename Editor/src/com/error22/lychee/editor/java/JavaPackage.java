@@ -17,9 +17,9 @@ public class JavaPackage implements ISourceEntry {
 		this.name = name;
 		files = new HashMap<UUID, JavaFile>();
 		
-		JavaFile f1 = new JavaFile(UUID.randomUUID(), "Example");
+		JavaFile f1 = new JavaFile(UUID.randomUUID(), this, "Example");
 		files.put(f1.getId(), f1);
-		JavaFile f2 = new JavaFile(UUID.randomUUID(), "OtherExample");
+		JavaFile f2 = new JavaFile(UUID.randomUUID(), this, "OtherExample");
 		files.put(f2.getId(), f2);
 		
 	}
