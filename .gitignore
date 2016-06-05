@@ -16,3 +16,5 @@ Common/.settings
 Common/bin
 Common/.classpath
 Common/.project
+Build/out
+Build/bin

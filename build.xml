@@ -1,0 +1,147 @@
+<project name="simpleCompile" default="buildAll" basedir=".">
+	
+	
+	<target name="setupVars" unless="vars.setup">
+		<property name="vars.setup" value="true" />
+		<echo>Setting up vars...</echo>
+		
+		<property environment="env" />
+		
+		<property name="version.major" value ="1"/>
+		<property name="version.minor" value ="0"/>
+		<condition property="version.build" value="${env.BUILD_NUMBER}" else="dev">
+            <isset property="env.BUILD_NUMBER" />
+        </condition>
+		
+		<property name="build.dir" location ="Build"/>
+		<property name="build.bin" location ="${build.dir}/bin"/>
+		<property name="build.out" location ="${build.dir}/out"/>
+		<property name="common.dir" location ="Common"/>
+		<property name="common.src" location ="${common.dir}/src"/>
+		<property name="common.libs" location ="${common.dir}/libs"/>
+		<property name="common.jar" location ="${build.out}/Lychee-Common-${version.major}.${version.minor}-${version.build}.jar"/>
+		<property name="editor.dir" location ="Editor"/>
+		<property name="editor.src" location ="${editor.dir}/src"/>
+		<property name="editor.res" location ="${editor.dir}/res"/>
+		<property name="editor.libs" location ="${editor.dir}/libs"/>
+		<property name="editor.jar" location ="${build.out}/Lychee-Editor-${version.major}.${version.minor}-${version.build}.jar"/>
+		<property name="server.dir" location ="Server"/>
+		<property name="server.src" location ="${server.dir}/src"/>
+		<property name="server.libs" location ="${server.dir}/libs"/>
+		<property name="server.jar" location ="${build.out}/Lychee-Server-${version.major}.${version.minor}-${version.build}.jar"/>
+	</target>
+	
+	<target name="clean" depends="setupVars">
+		<echo>Cleaning...</echo>
+		<delete dir="${build.bin}"/>
+		<delete dir="${build.out}"/>
+	</target>
+	
+	<target name="buildCommon" depends="setupVars">
+		<echo>Building common...</echo>
+		<delete dir="${build.bin}"/>
+		<mkdir dir="${build.bin}"/>
+		
+		<path id="common-classpath">
+			<fileset dir="${common.libs}">
+				<include name="*.jar"/>
+			</fileset>
+		</path>
+		
+		<javac encoding="UTF-8" compiler="modern" source="1.8" target="1.8" deprecation="false"
+                destdir="${build.bin}" includeantruntime="false" includejavaruntime="true">
+            <compilerarg value="-Xlint:-options" />
+            <compilerarg value="-Xlint:deprecation" />
+            <compilerarg value="-Xlint:unchecked" />
+            <classpath refid="common-classpath"/>
+            <src path="${common.src}" />
+        </javac>
+		
+		<jar destfile="${common.jar}">
+			<zipgroupfileset dir="${common.libs}" includes="*.jar"/>
+			<fileset dir="${build.bin}" includes="**/*.class" />
+		</jar>
+		
+		<delete dir="${build.bin}"/>
+	</target>
+	
+	<target name="buildEditor" depends="setupVars">
+		<echo>Building editor...</echo>
+		<delete dir="${build.bin}"/>
+		<mkdir dir="${build.bin}"/>
+		
+		<path id="editor-classpath">
+			<pathelement location="${common.jar}"/>
+			<fileset dir="${editor.libs}">
+				<include name="*.jar"/>
+			</fileset>
+		</path>
+		
+		<javac encoding="UTF-8" compiler="modern" source="1.8" target="1.8" deprecation="false"
+                destdir="${build.bin}" includeantruntime="false" includejavaruntime="true">
+            <compilerarg value="-Xlint:-options" />
+            <compilerarg value="-Xlint:deprecation" />
+            <compilerarg value="-Xlint:unchecked" />
+            <classpath refid="editor-classpath"/>
+            <src path="${editor.src}" />
+        </javac>
+		
+		<copy todir="${build.bin}">
+			<fileset dir="${editor.res}"/>
+		</copy>
+		
+		<jar destfile="${editor.jar}">
+			<zipfileset src="${common.jar}" />
+			<zipgroupfileset dir="${editor.libs}" includes="*.jar"/>
+			<fileset dir="${build.bin}" includes="**/*.*" />
+			
+			<manifest>
+				<attribute name="Main-Class" value="com.error22.lychee.editor.LycheeEditor"/>
+			</manifest>
+		</jar>
+		
+		<delete dir="${build.bin}"/>
+	</target>
+	
+	<target name="buildServer" depends="setupVars">
+		<echo>Building server...</echo>
+		<delete dir="${build.bin}"/>
+		<mkdir dir="${build.bin}"/>
+		
+		<path id="server-classpath">
+			<pathelement location="${common.jar}"/>
+			<fileset dir="${server.libs}">
+				<include name="*.jar"/>
+			</fileset>
+		</path>
+		
+		<javac encoding="UTF-8" compiler="modern" source="1.8" target="1.8" deprecation="false"
+                destdir="${build.bin}" includeantruntime="false" includejavaruntime="true">
+            <compilerarg value="-Xlint:-options" />
+            <compilerarg value="-Xlint:deprecation" />
+            <compilerarg value="-Xlint:unchecked" />
+            <classpath refid="server-classpath"/>
+            <src path="${server.src}" />
+        </javac>
+		
+		<jar destfile="${server.jar}">
+			<zipfileset src="${common.jar}" />
+			<zipgroupfileset dir="${server.libs}" includes="*.jar"/>
+			<fileset dir="${build.bin}" includes="**/*.*" />
+			
+			<manifest>
+				<attribute name="Main-Class" value="com.error22.lychee.server.LycheeServer"/>
+			</manifest>
+		</jar>
+		
+		<delete dir="${build.bin}"/>
+	</target>
+	
+	
+	<target name="buildAll" depends="setupVars" >
+		<antcall target="clean"/>
+		<antcall target="buildCommon"/>
+		<antcall target="buildEditor"/>
+		<antcall target="buildServer"/>
+	</target>
+</project>
