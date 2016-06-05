@@ -28,12 +28,6 @@ public class RootTreeNode extends ExplorerTreeNode {
 		Arrays.parallelSort(projects, new ProjectNameComparator());
 		List<UUID> ids = Arrays.stream(projects).map(IProject::getId).collect(Collectors.toList());
 		
-		
-		
-//		List<Integer> toRemove = IntStream.range(0, projectIds.length).filter(index -> !ids.contains(projectIds[index]))
-//				.boxed().collect(Collectors.toList());
-//		remove(toRemove);
-		
 		int[] data = IntStream.range(0, projectIds.length).filter(index -> !ids.contains(projectIds[index])).toArray();
 		int offset = 0;
 		for(int index : data){
@@ -50,24 +44,8 @@ public class RootTreeNode extends ExplorerTreeNode {
 				continue;
 			}
 			insert(i, projects[i].getNode(this));
-//			indices.add(originalPos);
-//			nodes.add(new SourceTreeNode(this, entries[i]));
 		}
 		
-//		List<Integer> indices = new ArrayList<Integer>();
-//		List<ExplorerTreeNode> nodes = new ArrayList<ExplorerTreeNode>();
-//
-//		int originalPos = 0;
-//		for (int i = 0; i < projects.length; i++) {
-//			if (originalPos < projectIds.length && projectIds[originalPos] == projects[i].getId()) {
-//				originalPos++;
-//				continue;
-//			}
-//			indices.add(originalPos);
-//			nodes.add(projects[i].getNode(this));
-//		}
-//		
-//		insert(indices, nodes);
 		projectIds = ids.stream().toArray(size -> new UUID[size]);
 	}
 

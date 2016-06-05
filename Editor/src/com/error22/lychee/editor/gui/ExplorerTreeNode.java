@@ -59,7 +59,6 @@ public abstract class ExplorerTreeNode {
 	}
 
 	public void remove(int position) {
-		log.info("Removing " + position);
 		ExplorerTreeNode[] newChildren = new ExplorerTreeNode[children.length - 1];
 
 		if (position > 0) {

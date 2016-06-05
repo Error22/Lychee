@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -38,19 +37,11 @@ public class EditorWindow {
 	private ExplorerTreeModel explorerTreeModel;
 	private JTabbedPane editorTabbedPane;
 
-	/**
-	 * Create the application.
-	 * 
-	 * @param lycheeEditor
-	 */
 	public EditorWindow(LycheeEditor editor) {
 		this.editor = editor;
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle("Lychee 1.0 - Error22");

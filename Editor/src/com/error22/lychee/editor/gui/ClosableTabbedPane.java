@@ -18,17 +18,13 @@ import javax.swing.JTabbedPane;
 import com.error22.lychee.editor.IEditor;
 
 public class ClosableTabbedPane extends JTabbedPane {
+	private static final long serialVersionUID = 1L;
+	private TabCloseUI closeUI = new TabCloseUI(this);
 
 	public ClosableTabbedPane(int pos) {
 		super(pos);
 
 	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private TabCloseUI closeUI = new TabCloseUI(this);
 
 	public void paint(Graphics g) {
 		super.paint(g);
@@ -82,7 +78,8 @@ public class ClosableTabbedPane extends JTabbedPane {
 			if (closeUnderMouse(me.getX(), me.getY())) {
 				boolean isToCloseTab = tabAboutToClose(selectedTab);
 				if (isToCloseTab && selectedTab > -1) {
-					IEditor editor = (IEditor)((JComponent)tabbedPane.getComponent(selectedTab)).getClientProperty(IEditor.class);
+					IEditor editor = (IEditor) ((JComponent) tabbedPane.getComponent(selectedTab))
+							.getClientProperty(IEditor.class);
 					tabbedPane.removeTabAt(selectedTab);
 					editor.destroy();
 
@@ -104,14 +101,16 @@ public class ClosableTabbedPane extends JTabbedPane {
 			if (tabbedPane.getTabCount() > 0)
 				if (closeUnderMouse(meX, meY)) {
 					tabbedPane.setCursor(new Cursor(Cursor.HAND_CURSOR));
-					if (selectedTab > -1){
-						IEditor editor = (IEditor)((JComponent)tabbedPane.getComponent(selectedTab)).getClientProperty(IEditor.class);
+					if (selectedTab > -1) {
+						IEditor editor = (IEditor) ((JComponent) tabbedPane.getComponent(selectedTab))
+								.getClientProperty(IEditor.class);
 						tabbedPane.setToolTipTextAt(selectedTab, editor.getCloseToolTip());
 					}
 				} else {
 					tabbedPane.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-					if (selectedTab > -1){
-						IEditor editor = (IEditor)((JComponent)tabbedPane.getComponent(selectedTab)).getClientProperty(IEditor.class);
+					if (selectedTab > -1) {
+						IEditor editor = (IEditor) ((JComponent) tabbedPane.getComponent(selectedTab))
+								.getClientProperty(IEditor.class);
 						tabbedPane.setToolTipTextAt(selectedTab, editor.getHoverToolTip());
 					}
 				}
@@ -144,20 +143,22 @@ public class ClosableTabbedPane extends JTabbedPane {
 		}
 
 		private void drawColored(Graphics2D g2, boolean active, int x, int y) {
-			if(active){
+			if (active) {
 				g2.setColor(Color.RED);
-				g2.fillRect(x-2, y-2, width+5, height+5);
+				g2.fillRect(x - 2, y - 2, width + 5, height + 5);
 			}
-			
+
 			g2.setStroke(new BasicStroke(2, BasicStroke.JOIN_ROUND, BasicStroke.CAP_ROUND));
 			g2.setColor(active ? Color.WHITE : Color.BLACK);
 			g2.drawLine(x, y, x + width, y + height);
 			g2.drawLine(x + width, y, x, y + height);
 
-//			g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 128));
-//			g2.setStroke(new BasicStroke(3, BasicStroke.JOIN_ROUND, BasicStroke.CAP_ROUND));
-//			g2.drawLine(x, y, x + width, y + height);
-//			g2.drawLine(x + width, y, x, y + height);
+			// g2.setColor(new Color(color.getRed(), color.getGreen(),
+			// color.getBlue(), 128));
+			// g2.setStroke(new BasicStroke(3, BasicStroke.JOIN_ROUND,
+			// BasicStroke.CAP_ROUND));
+			// g2.drawLine(x, y, x + width, y + height);
+			// g2.drawLine(x + width, y, x, y + height);
 
 		}
 
